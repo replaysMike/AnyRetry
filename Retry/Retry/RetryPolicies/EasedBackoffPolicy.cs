@@ -8,17 +8,20 @@ namespace Retry.RetryPolicies
     /// </summary>
     public class EasedBackoffPolicy : IRetryPolicy
     {
-        private RetryPolicyOptions _options;
+        private readonly RetryPolicyOptions _options;
 
         public EasedBackoffPolicy(RetryPolicyOptions options)
         {
-            _options = options;
+            _options = options ?? new RetryPolicyOptions { EasingFunction = EasingFunction.ElasticEaseIn, MaxRetryInterval = TimeSpan.MinValue };
         }
 
         public TimeSpan ApplyPolicy(RetryParameters retryParameters)
         {
-            // todo: what to use for maxDelay?
-            return GetRetryTimeoutSeconds(retryParameters.RetryIteration, retryParameters.RetryCount, retryParameters.RetryInterval, retryParameters.RetryInterval, _options.EasingFunction);
+            var maxInterval = _options.MaxRetryInterval;
+            if (maxInterval == TimeSpan.MinValue)
+                maxInterval = TimeSpan.FromMilliseconds(retryParameters.RetryInterval.TotalMilliseconds * retryParameters.RetryIteration);
+            var minInterval = retryParameters.RetryInterval;
+            return GetRetryTimeoutSeconds(retryParameters.RetryIteration, retryParameters.RetryCount, minInterval, maxInterval, _options.EasingFunction);
         }
 
         /// <summary>
@@ -32,19 +35,16 @@ namespace Retry.RetryPolicies
         /// <returns></returns>
         private TimeSpan GetRetryTimeoutSeconds(int retryIteration, int retryCount, TimeSpan minDelay, TimeSpan maxDelay, EasingFunction easingFunction)
         {
-            if (retryIteration <= 1)
-                return minDelay;
-            if (retryIteration >= retryCount)
-                return maxDelay;
-
-            // use quadratic easing
             // produce a number between 0 and 1.0
-            var t = (double)retryIteration / retryCount;
+            var t = (double)retryIteration / (retryCount - 1);
+            // easeVal contains number between 0 and 1.0 but with easing applied
             var easeVal = Easings.Interpolate(t, easingFunction);
-            // easeVal is a number between 0.0 and 1.0
-            var diff = maxDelay - minDelay;
 
-            return TimeSpan.FromTicks((long)(diff.Ticks * easeVal));
+            if (easeVal == 0)
+                return minDelay;
+
+            var result = TimeSpan.FromTicks((long)(maxDelay.Ticks * easeVal));
+            return result;
         }
     }
 }

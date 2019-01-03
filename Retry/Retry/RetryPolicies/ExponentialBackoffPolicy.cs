@@ -18,6 +18,8 @@ namespace Retry.RetryPolicies
         private static int _seed = Environment.TickCount;
         private static readonly ThreadLocal<Random> _random;
 
+        private readonly RetryPolicyOptions _options;
+
         static ExponentialBackoffPolicy()
         {
             // thread safe random numbers
@@ -26,7 +28,9 @@ namespace Retry.RetryPolicies
 
         public ExponentialBackoffPolicy(RetryPolicyOptions options)
         {
-
+            _options = options;
+            if(_options == null || _options.Equals(RetryPolicyOptions.None))
+                _options = new RetryPolicyOptions { MaxRetryInterval = TimeSpan.FromMilliseconds(_maxDelayMsForExponentialBackoff) };
         }
 
         public TimeSpan ApplyPolicy(RetryParameters retryParameters)
@@ -51,9 +55,10 @@ namespace Retry.RetryPolicies
             {
                 // for exponential backoff, to prevent very long delays not suitable for a web application, we cap
                 // the delay per retry to 10 seconds OR the specified interval, whichever is higher
-                sleepIntervalMs = System.Math.Min(sleepIntervalMs, (int)System.Math.Max(_maxDelayMsForExponentialBackoff, interval.TotalMilliseconds));
+                sleepIntervalMs = System.Math.Min(sleepIntervalMs, (int)System.Math.Max(_options.MaxRetryInterval.TotalMilliseconds, interval.TotalMilliseconds));
             }
-            return TimeSpan.FromMilliseconds(sleepIntervalMs);
+            var result = TimeSpan.FromMilliseconds(sleepIntervalMs);
+            return result;
         }
     }
 }

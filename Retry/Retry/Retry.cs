@@ -12,13 +12,15 @@ namespace Retry
     public static class Retry
     {
         public static void Do(Action action)
-            => Do(action, TimeSpan.FromSeconds(1), int.MaxValue, RetryPolicy.StaticDelay, null, null);
+            => Do(action, TimeSpan.FromSeconds(1), int.MaxValue, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null);
         public static void Do(Action action, int retryCount)
-            => Do(action, TimeSpan.FromSeconds(1), retryCount, RetryPolicy.StaticDelay, null, null);
+            => Do(action, TimeSpan.FromSeconds(1), retryCount, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null);
         public static void Do(Action action, TimeSpan retryInterval, int retryCount)
-            => Do(action, retryInterval, retryCount, RetryPolicy.StaticDelay, null, null);
+            => Do(action, retryInterval, retryCount, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null);
+        public static void Do(Action action, TimeSpan minRetryInterval, TimeSpan maxRetryInterval, int retryCount)
+            => Do(action, minRetryInterval, retryCount, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null);
         public static void Do(Action action, TimeSpan retryInterval, int retryCount, RetryPolicy retryPolicy)
-            => Do(action, retryInterval, retryCount, retryPolicy, null, null);
+            => Do(action, retryInterval, retryCount, retryPolicy, RetryPolicyOptions.None, null);
         public static void Do(Action action, TimeSpan retryInterval, int retryCount, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions)
             => Do(action, retryInterval, retryCount, retryPolicy, retryPolicyOptions, null);
 
@@ -53,6 +55,8 @@ namespace Retry
                         if (retryIteration - 1 < retryCount)
                         {
                             var sleepValue = RetryPolicyFactory.Create(retryPolicy, retryPolicyOptions).ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryCount));
+                            if (sleepValue.TotalMilliseconds < 0)
+                                throw new ArgumentOutOfRangeException();
                             Thread.Sleep(sleepValue);
                         }
 
@@ -98,6 +102,8 @@ namespace Retry
                         if (retryIteration - 1 < retryCount)
                         {
                             var sleepValue = RetryPolicyFactory.Create(retryPolicy, retryPolicyOptions).ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryCount));
+                            if (sleepValue.TotalMilliseconds < 0)
+                                throw new ArgumentOutOfRangeException();
                             await Task.Delay(sleepValue);
                         }
                     }
@@ -143,6 +149,8 @@ namespace Retry
                         if (retryIteration - 1 < retryCount)
                         {
                             var sleepValue = RetryPolicyFactory.Create(retryPolicy, retryPolicyOptions).ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryCount));
+                            if (sleepValue.TotalMilliseconds < 0)
+                                throw new ArgumentOutOfRangeException();
                             Thread.Sleep(sleepValue);
                         }
                     }
@@ -188,6 +196,8 @@ namespace Retry
                         if (retryIteration - 1 < retryCount)
                         {
                             var sleepValue = RetryPolicyFactory.Create(retryPolicy, retryPolicyOptions).ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryCount));
+                            if (sleepValue.TotalMilliseconds < 0)
+                                throw new ArgumentOutOfRangeException();
                             await Task.Delay(sleepValue);
                         }
                     }
