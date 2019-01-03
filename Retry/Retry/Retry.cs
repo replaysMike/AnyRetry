@@ -11,6 +11,17 @@ namespace Retry
     /// </summary>
     public static class Retry
     {
+        public static void Do(Action action)
+            => Do(action, TimeSpan.FromSeconds(1), int.MaxValue, RetryPolicy.StaticDelay, null, null);
+        public static void Do(Action action, int retryCount)
+            => Do(action, TimeSpan.FromSeconds(1), retryCount, RetryPolicy.StaticDelay, null, null);
+        public static void Do(Action action, TimeSpan retryInterval, int retryCount)
+            => Do(action, retryInterval, retryCount, RetryPolicy.StaticDelay, null, null);
+        public static void Do(Action action, TimeSpan retryInterval, int retryCount, RetryPolicy retryPolicy)
+            => Do(action, retryInterval, retryCount, retryPolicy, null, null);
+        public static void Do(Action action, TimeSpan retryInterval, int retryCount, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions)
+            => Do(action, retryInterval, retryCount, retryPolicy, retryPolicyOptions, null);
+
         /// <summary>
         /// Perform a synchronous command that must be re-called if an exception occurs, up to a maximum retry limit.
         /// Example usage: Retry.Do(() => cmd.ExecuteNonQuery(), TimeSpan.FromSeconds(3), 10, typeof(System.Data.SqlClient.SqlException));
@@ -21,7 +32,7 @@ namespace Retry
         /// <param name="onFailure">Will be called upon an exception thrown</param>
         /// <param name="retryPolicy">The retry policy to apply</param>
         /// <exception cref="RetryTimeoutException"></exception>
-        public static void Do(Action action, TimeSpan retryInterval, int retryCount = 5, Action<Exception, int, int> onFailure = null, RetryPolicy retryPolicy = RetryPolicy.StaticDelay, RetryPolicyOptions retryPolicyOptions = null, params Type[] exceptionType)
+        public static void Do(Action action, TimeSpan retryInterval, int retryCount, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, params Type[] exceptionTypes)
         {
             var exceptions = new List<Exception>();
             var startTime = DateTime.Now;
@@ -37,7 +48,7 @@ namespace Retry
                 {
                     onFailure?.Invoke(ex, retryIteration, retryCount);
                     exceptions.Add(ex);
-                    if (exceptionType == null || exceptionType.Length == 0 || exceptionType.Contains<Type>(ex.GetType()))
+                    if (exceptionTypes == null || exceptionTypes.Length == 0 || exceptionTypes.Contains<Type>(ex.GetType()))
                     {
                         if (retryIteration - 1 < retryCount)
                         {
@@ -112,7 +123,7 @@ namespace Retry
         /// <param name="retryPolicy">The retry policy to apply</param>
         /// <exception cref="RetryTimeoutException"></exception>
         /// <returns></returns>
-        public static T Do<T>(Func<T> action, TimeSpan retryInterval, int retryCount = 5, Action<Exception, int, int> onFailure = null, RetryPolicy retryPolicy = RetryPolicy.StaticDelay, RetryPolicyOptions retryPolicyOptions = null, params Type[] exceptionType)
+        public static T Do<T>(Func<T> action, TimeSpan retryInterval, int retryCount, Action<Exception, int, int> onFailure, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, params Type[] exceptionType)
         {
             var exceptions = new List<Exception>();
             var startTime = DateTime.Now;
@@ -157,7 +168,7 @@ namespace Retry
         /// <param name="retryPolicy">The retry policy to apply</param>
         /// <exception cref="RetryTimeoutException"></exception>
         /// <returns></returns>
-        public static async Task<T> DoAsync<T>(Func<Task<T>> action, TimeSpan retryInterval, int retryCount = 5, Action<Exception, int, int> onFailure = null, RetryPolicy retryPolicy = RetryPolicy.StaticDelay, RetryPolicyOptions retryPolicyOptions = null, params Type[] exceptionType)
+        public static async Task<T> DoAsync<T>(Func<Task<T>> action, TimeSpan retryInterval, int retryCount, Action<Exception, int, int> onFailure, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, params Type[] exceptionType)
         {
             var exceptions = new List<Exception>();
             var startTime = DateTime.Now;
