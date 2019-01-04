@@ -20,8 +20,8 @@ PM> Install-Package AnyRetry
 
 ## Usage
 
-Simplest usage is simply retry calling a method if it fails.
-If any exception is thrown, it will retry up to 10 times every 5 seconds. If it fails every time, a RetryTimeoutException will be thrown.
+Basic usage would be to retry execution of a method if it throws an exception.
+If any exception is thrown, it will retry up to 10 times every 5 seconds (configurable). If it exceeds the maximum number of retries, a `RetryTimeoutException` will be thrown.
 
 ```csharp
 using AnyRetry;
@@ -60,7 +60,7 @@ Retry.Do(() =>
 
 There are 3 types of policies available: `StaticDelay`, `ExponentialBackoff`, `EasedBackoff`. 
 
-StaticDelay specifies that the retry time is always the same. ExponentialBackoff will multiply the `retryEvery` exponentially on every failure (a maximum can also be specified). EasedBackoff allows you to choose a standard easing algorithm, such as `ExponentialEaseOut` or `QuadraticEaseOut` for example.
+`StaticDelay` specifies that the retry time is always the same. `ExponentialBackoff` will multiply the `retryEvery` exponentially on every failure (a maximum can also be specified). `EasedBackoff` allows you to choose a standard easing algorithm, such as `ExponentialEaseOut` or `QuadraticEaseOut` for example.
 
 Specifying policy options:
 ```csharp
@@ -81,8 +81,6 @@ Retry.Do(() =>
 Async usage is identical to the synchronous examples:
 
 ```csharp
-using AnyRetry;
-
 var maxRetries = 10;
 var retryEvery = TimeSpan.FromSeconds(5);
 await Retry.DoAsync(async () =>
@@ -91,13 +89,11 @@ await Retry.DoAsync(async () =>
 }, retryEvery, maxRetries);
 ```
 
-### Additional tips
+### Advanced tips
 
 If you need access to the retry information, you can specify access as follows:
 
 ```csharp
-using AnyRetry;
-
 var maxRetries = 10;
 var retryEvery = TimeSpan.FromSeconds(5);
  Retry.Do((retryIteration, maxRetryCount) =>
@@ -107,3 +103,38 @@ var retryEvery = TimeSpan.FromSeconds(5);
     DoMyNetworkOperation();
 }, retryEvery, maxRetries);
 ```
+
+If you want to run some code when a retry fails, use the onFailure handler:
+```csharp
+var maxRetries = 10;
+var retryEvery = TimeSpan.FromSeconds(5);
+ Retry.Do(() =>
+{
+    DoMyNetworkOperation();
+}, retryEvery, maxRetries, RetryPolicy.StaticDelay, RetryPolicyOptions.None, (retryIteration, maxRetryCount) => {
+  // add your custom error code here
+});
+```
+
+A rarely useful feature is being able to always retry if a condition is true, and if a condition is false it will retry up to the maximum number of retries. This can be useful if you want to always retry based on some condition like a status check, but if that condition isn't met to retry until failure.
+```csharp
+var maxRetries = 1;
+var retryEvery = TimeSpan.FromMilliseconds(100);
+var i = 0;
+Retry.Do(() =>
+{
+    i++;
+    DoMyNetworkOperation();
+}, retryEvery, 
+    maxRetries, 
+    RetryPolicy.StaticDelay, 
+    RetryPolicyOptions.None, 
+    (retryIteration, maxRetryCount) => {},
+    () => {
+        // this must return true otherwise it will retry forever!
+        // the result of this is it will retry until i is 10, no matter the maxRetries value.
+        return i != 10;
+    }
+);
+```
+
