@@ -296,7 +296,7 @@
         /// </summary>
         public static double ExponentialEaseIn(double p)
         {
-            return (p == 0.0d) ? p : System.Math.Pow(2, 10 * (p - 1));
+            return (p == 0d) ? p : System.Math.Pow(2d, 10d * (p - 1d));
         }
 
         /// <summary>
@@ -304,7 +304,7 @@
         /// </summary>
         public static double ExponentialEaseOut(double p)
         {
-            return (p == 1.0d) ? p : 1 - System.Math.Pow(2, -10 * p);
+            return (p == 1d) ? p : 1d - System.Math.Pow(2d, -10d * p);
         }
 
         /// <summary>
@@ -314,16 +314,16 @@
         /// </summary>
         public static double ExponentialEaseInOut(double p)
         {
-            if (p == 0.0 || p == 1.0)
+            if (p == 0d || p == 1d)
                 return p;
 
             if (p < 0.5d)
             {
-                return 0.5d * System.Math.Pow(2, (20 * p) - 10);
+                return 0.5d * System.Math.Pow(2d, (20d * p) - 10d);
             }
             else
             {
-                return -0.5d * System.Math.Pow(2, (-20 * p) + 10) + 1;
+                return -0.5d * System.Math.Pow(2d, (-20d * p) + 10d) + 1d;
             }
         }
 

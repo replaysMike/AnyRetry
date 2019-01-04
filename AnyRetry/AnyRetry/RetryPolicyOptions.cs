@@ -18,11 +18,6 @@ namespace AnyRetry
         /// </summary>
         public TimeSpan MaxRetryInterval { get; set; }
 
-        public RetryPolicyOptions()
-        {
-
-        }
-
         /// <summary>
         /// Create a empty policy options
         /// </summary>

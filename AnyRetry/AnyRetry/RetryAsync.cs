@@ -44,7 +44,7 @@ namespace AnyRetry
         /// <exception cref="RetryTimeoutException"></exception>
         public static async Task DoAsync(RetryActionWithParametersAsync action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
-            await PerformActionAsync<object>(async (x, y) => { await action.Invoke(x, y); return Task.FromResult<object>(default(object)); }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes).ConfigureAwait(false);
+            await PerformActionAsync<object>(async (x, y) => { await action.Invoke(x, y).ConfigureAwait(false); return Task.FromResult<object>(default(object)); }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace AnyRetry
         /// <returns></returns>
         public static async Task<T> DoAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
-            return await PerformActionAsync<T>(async (x, y) => await action.Invoke(x, y), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes).ConfigureAwait(false);
+            return await PerformActionAsync<T>(async (x, y) => await action.Invoke(x, y).ConfigureAwait(false), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes).ConfigureAwait(false);
         }
 
         private static async Task<T> PerformActionAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
