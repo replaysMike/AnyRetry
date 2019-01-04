@@ -29,7 +29,7 @@ namespace AnyRetry
         /// <param name="retryIteration">The current retry iteration</param>
         /// <param name="retryLimit">The maximum number of times that will be retried</param>
         /// <returns></returns>
-        public delegate T RetryActionWithParametersAndResult<T>(int retryIteration, int retryLimit);
+        public delegate T RetryActionWithParametersAndResult<out T>(int retryIteration, int retryLimit);
 
         /// <summary>
         /// Perform an synchronous retry up to the maximum specified limit

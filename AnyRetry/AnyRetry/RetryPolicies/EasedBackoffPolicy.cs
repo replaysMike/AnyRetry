@@ -33,7 +33,7 @@ namespace AnyRetry.RetryPolicies
         /// <param name="maxDelay">The maximum delay to use</param>
         /// <param name="easingFunction"></param>
         /// <returns></returns>
-        private TimeSpan GetRetryTimeoutSeconds(int retryIteration, int retryCount, TimeSpan minDelay, TimeSpan maxDelay, EasingFunction easingFunction)
+        private static TimeSpan GetRetryTimeoutSeconds(int retryIteration, int retryCount, TimeSpan minDelay, TimeSpan maxDelay, EasingFunction easingFunction)
         {
             // produce a number between 0 and 1.0
             var t = (double)retryIteration / (retryCount - 1);

@@ -44,7 +44,7 @@ namespace AnyRetry
         /// <exception cref="RetryTimeoutException"></exception>
         public static async Task DoAsync(RetryActionWithParametersAsync action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
-            await PerformActionAsync<object>(async (x, y) => { await action.Invoke(x, y); return Task.FromResult<object>(default(object)); }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
+            await PerformActionAsync<object>(async (x, y) => { await action.Invoke(x, y); return Task.FromResult<object>(default(object)); }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace AnyRetry
         /// <returns></returns>
         public static async Task<T> DoAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
-            return await PerformActionAsync<T>(async (x, y) => await action.Invoke(x, y), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
+            return await PerformActionAsync<T>(async (x, y) => await action.Invoke(x, y), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes).ConfigureAwait(false);
         }
 
         private static async Task<T> PerformActionAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
@@ -77,7 +77,7 @@ namespace AnyRetry
             {
                 try
                 {
-                    var result = await action.Invoke(retryIteration, retryLimit);
+                    var result = await action.Invoke(retryIteration, retryLimit).ConfigureAwait(false);
                     return result;
                 }
                 catch (Exception ex)
@@ -91,7 +91,7 @@ namespace AnyRetry
                             var sleepValue = RetryPolicyFactory.Create(retryPolicy, retryPolicyOptions).ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryLimit));
                             if (sleepValue.TotalMilliseconds < 0)
                                 throw new ArgumentOutOfRangeException();
-                            await Task.Delay(sleepValue);
+                            await Task.Delay(sleepValue).ConfigureAwait(false);
                         }
                     }
                     else

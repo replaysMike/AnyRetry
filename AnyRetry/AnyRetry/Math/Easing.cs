@@ -119,7 +119,7 @@
         /// </summary>
         public static double QuadraticEaseInOut(double p)
         {
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
                 return 2 * p * p;
             }
@@ -153,14 +153,14 @@
         /// </summary>
         public static double CubicEaseInOut(double p)
         {
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
                 return 4 * p * p * p;
             }
             else
             {
                 double f = ((2 * p) - 2);
-                return 0.5f * f * f * f + 1;
+                return 0.5d * f * f * f + 1;
             }
         }
 
@@ -188,7 +188,7 @@
         /// </summary>
         public static double QuarticEaseInOut(double p)
         {
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
                 return 8 * p * p * p * p;
             }
@@ -223,14 +223,14 @@
         /// </summary>
         public static double QuinticEaseInOut(double p)
         {
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
                 return 16 * p * p * p * p * p;
             }
             else
             {
                 double f = ((2 * p) - 2);
-                return 0.5f * f * f * f * f * f + 1;
+                return 0.5d * f * f * f * f * f + 1;
             }
         }
 
@@ -255,7 +255,7 @@
         /// </summary>
         public static double SineEaseInOut(double p)
         {
-            return 0.5f * (1 - System.Math.Cos(p * PI));
+            return 0.5d * (1 - System.Math.Cos(p * PI));
         }
 
         /// <summary>
@@ -281,13 +281,13 @@
         /// </summary>
         public static double CircularEaseInOut(double p)
         {
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
-                return 0.5f * (1 - System.Math.Sqrt(1 - 4 * (p * p)));
+                return 0.5d * (1 - System.Math.Sqrt(1 - 4 * (p * p)));
             }
             else
             {
-                return 0.5f * (System.Math.Sqrt(-((2 * p) - 3) * ((2 * p) - 1)) + 1);
+                return 0.5d * (System.Math.Sqrt(-((2 * p) - 3) * ((2 * p) - 1)) + 1);
             }
         }
 
@@ -296,7 +296,7 @@
         /// </summary>
         public static double ExponentialEaseIn(double p)
         {
-            return (p == 0.0f) ? p : System.Math.Pow(2, 10 * (p - 1));
+            return (p == 0.0d) ? p : System.Math.Pow(2, 10 * (p - 1));
         }
 
         /// <summary>
@@ -304,7 +304,7 @@
         /// </summary>
         public static double ExponentialEaseOut(double p)
         {
-            return (p == 1.0f) ? p : 1 - System.Math.Pow(2, -10 * p);
+            return (p == 1.0d) ? p : 1 - System.Math.Pow(2, -10 * p);
         }
 
         /// <summary>
@@ -317,13 +317,13 @@
             if (p == 0.0 || p == 1.0)
                 return p;
 
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
-                return 0.5f * System.Math.Pow(2, (20 * p) - 10);
+                return 0.5d * System.Math.Pow(2, (20 * p) - 10);
             }
             else
             {
-                return -0.5f * System.Math.Pow(2, (-20 * p) + 10) + 1;
+                return -0.5d * System.Math.Pow(2, (-20 * p) + 10) + 1;
             }
         }
 
@@ -350,13 +350,13 @@
         /// </summary>
         public static double ElasticEaseInOut(double p)
         {
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
-                return 0.5f * System.Math.Sin(13 * HALFPI * (2 * p)) * System.Math.Pow(2, 10 * ((2 * p) - 1));
+                return 0.5d * System.Math.Sin(13 * HALFPI * (2 * p)) * System.Math.Pow(2, 10 * ((2 * p) - 1));
             }
             else
             {
-                return 0.5f * (System.Math.Sin(-13 * HALFPI * ((2 * p - 1) + 1)) * System.Math.Pow(2, -10 * (2 * p - 1)) + 2);
+                return 0.5d * (System.Math.Sin(-13 * HALFPI * ((2 * p - 1) + 1)) * System.Math.Pow(2, -10 * (2 * p - 1)) + 2);
             }
         }
 
@@ -384,15 +384,15 @@
         /// </summary>
         public static double BackEaseInOut(double p)
         {
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
                 double f = 2 * p;
-                return 0.5f * (f * f * f - f * System.Math.Sin(f * PI));
+                return 0.5d * (f * f * f - f * System.Math.Sin(f * PI));
             }
             else
             {
                 double f = (1 - (2 * p - 1));
-                return 0.5f * (1 - (f * f * f - f * System.Math.Sin(f * PI))) + 0.5f;
+                return 0.5d * (1 - (f * f * f - f * System.Math.Sin(f * PI))) + 0.5d;
             }
         }
 
@@ -407,21 +407,21 @@
         /// </summary>
         public static double BounceEaseOut(double p)
         {
-            if (p < 4 / 11.0f)
+            if (p < 4 / 11.0d)
             {
-                return (121 * p * p) / 16.0f;
+                return (121 * p * p) / 16.0d;
             }
-            else if (p < 8 / 11.0f)
+            else if (p < 8 / 11.0d)
             {
-                return (363 / 40.0f * p * p) - (99 / 10.0f * p) + 17 / 5.0f;
+                return (363 / 40.0d * p * p) - (99 / 10.0d * p) + 17 / 5.0d;
             }
-            else if (p < 9 / 10.0f)
+            else if (p < 9 / 10.0d)
             {
-                return (4356 / 361.0f * p * p) - (35442 / 1805.0f * p) + 16061 / 1805.0f;
+                return (4356 / 361.0d * p * p) - (35442 / 1805.0d * p) + 16061 / 1805.0d;
             }
             else
             {
-                return (54 / 5.0f * p * p) - (513 / 25.0f * p) + 268 / 25.0f;
+                return (54 / 5.0d * p * p) - (513 / 25.0d * p) + 268 / 25.0d;
             }
         }
 
@@ -429,13 +429,13 @@
         /// </summary>
         public static double BounceEaseInOut(double p)
         {
-            if (p < 0.5f)
+            if (p < 0.5d)
             {
-                return 0.5f * BounceEaseIn(p * 2);
+                return 0.5d * BounceEaseIn(p * 2);
             }
             else
             {
-                return 0.5f * BounceEaseOut(p * 2 - 1) + 0.5f;
+                return 0.5d * BounceEaseOut(p * 2 - 1) + 0.5d;
             }
         }
     }
