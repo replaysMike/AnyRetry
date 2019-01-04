@@ -56,6 +56,54 @@ Retry.Do(() =>
 }, retryEvery, maxRetries, RetryPolicy.ExponentialBackoff);
 ```
 
+### Retry Policies
+
 There are 3 types of policies available: `StaticDelay`, `ExponentialBackoff`, `EasedBackoff`. 
 
 StaticDelay specifies that the retry time is always the same. ExponentialBackoff will multiply the `retryEvery` exponentially on every failure (a maximum can also be specified). EasedBackoff allows you to choose a standard easing algorithm, such as `ExponentialEaseOut` or `QuadraticEaseOut` for example.
+
+Specifying policy options:
+```csharp
+var maxRetries = 10;
+var retryEvery = TimeSpan.FromSeconds(5);
+var policyOptions = new RetryPolicyOptions { 
+    EasingFunction = EasingFunction.QuadraticEaseOut,
+    MaxRetryInterval = TimeSpan.FromSeconds(30);
+};
+Retry.Do(() =>
+{
+    DoMyNetworkOperation();
+}, retryEvery, maxRetries, RetryPolicy.EasedBackoff, policyOptions);
+```
+
+### Asynchronous usage
+
+Async usage is identical to the synchronous examples:
+
+```csharp
+using AnyRetry;
+
+var maxRetries = 10;
+var retryEvery = TimeSpan.FromSeconds(5);
+await Retry.DoAsync(async () =>
+{
+    await DoMyNetworkOperationAsync();
+}, retryEvery, maxRetries);
+```
+
+### Additional tips
+
+If you need access to the retry information, you can specify access as follows:
+
+```csharp
+using AnyRetry;
+
+var maxRetries = 10;
+var retryEvery = TimeSpan.FromSeconds(5);
+ Retry.Do((retryIteration, maxRetryCount) =>
+{
+    Console.WriteLine($"Retry #: {retryIteration}");
+    Console.WriteLine($"MaxRetries #: {maxRetryCount}");
+    DoMyNetworkOperation();
+}, retryEvery, maxRetries);
+```
