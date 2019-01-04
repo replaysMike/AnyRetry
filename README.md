@@ -10,7 +10,7 @@ A simple CSharp library for retrying operations with backoff and async support.
 
 ## Description
 
-AnyRetry allows you to retry operations that may fail such as database operations, network or anything which may throw an unexpected temporary exception. It supports auto-backoff using different available algorithms which is real handy for retrying network operations.
+AnyRetry allows you to retry operations that may fail such as database operations, network or anything which may throw an unexpected temporary exception. It supports auto-backoff using different available algorithms which is real handy for retrying network operations. Support is available for .Net Framework 4+ and .Net Standard 2.0+
 
 ## Installation
 Install AnyRetry from the Package Manager Console:
