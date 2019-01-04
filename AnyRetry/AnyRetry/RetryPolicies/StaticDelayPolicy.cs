@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Retry.RetryPolicies
+namespace AnyRetry.RetryPolicies
 {
     /// <summary>
     /// A static amount of time to delay

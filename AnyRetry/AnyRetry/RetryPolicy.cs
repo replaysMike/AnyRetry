@@ -1,4 +1,4 @@
-﻿namespace Retry
+﻿namespace AnyRetry
 {
     /// <summary>
     /// The retry policy to use

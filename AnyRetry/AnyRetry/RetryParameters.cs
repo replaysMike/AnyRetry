@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Retry
+namespace AnyRetry
 {
     /// <summary>
     /// The parameters of a retry operation

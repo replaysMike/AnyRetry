@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Retry.Tests
+namespace AnyRetry.Tests
 {
     [TestFixture]
     public class RetryPolicyTests

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace Retry
+namespace AnyRetry
 {
     /// <summary>
     /// A general purpose retry class for retrying code blocks.

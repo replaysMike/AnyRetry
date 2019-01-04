@@ -1,19 +1,18 @@
 using NUnit.Framework;
 using System;
-using System.Threading.Tasks;
 
-namespace Retry.Tests
+namespace AnyRetry.Tests
 {
     [TestFixture]
-    public class RetryAsyncTests
+    public class RetryTests
     {
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryOnceAsync()
+        public void Retry_Static_ShouldRetryOnce()
         {
             var retriesPerformed = 0;
             const int maxRetries = 5;
             // fail on the first try, second try will succeed
-            await Retry.DoAsync(async () =>
+            Retry.Do(() =>
             {
                 retriesPerformed++;
                 if (retriesPerformed == 1)
@@ -24,32 +23,31 @@ namespace Retry.Tests
         }
 
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryUntilMaxAsync()
+        public void Retry_Static_ShouldRetryUntilMax()
         {
             var retriesPerformed = 0;
             const int maxRetries = 5;
             // fail on all retries
-            Assert.ThrowsAsync<RetryTimeoutException>(async () =>
+            Assert.Throws<RetryTimeoutException>(() =>
+            {
+                Retry.Do(() =>
                 {
-                    await Retry.DoAsync(async () =>
-                    {
-                        retriesPerformed++;
-                        throw new RetryTestException();
-                    }, TimeSpan.FromMilliseconds(10), maxRetries);
-                }
-            );
+                    retriesPerformed++;
+                    throw new RetryTestException();
+                }, TimeSpan.FromMilliseconds(10), maxRetries);
+            });
             Assert.AreEqual(5, retriesPerformed);
         }
 
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryIntervalElapsedAsync()
+        public void Retry_Static_ShouldRetryIntervalElapsed()
         {
             // fail on all retries
             var startTime = DateTime.Now;
             var timeBetweenRetries = TimeSpan.FromMilliseconds(150);
-            Assert.ThrowsAsync<RetryTimeoutException>(async () =>
+            Assert.Throws<RetryTimeoutException>(() =>
             {
-                await Retry.DoAsync(async () =>
+                Retry.Do(() =>
                 {
                     throw new RetryTestException();
                 }, timeBetweenRetries, 1, RetryPolicy.StaticDelay);
@@ -58,16 +56,16 @@ namespace Retry.Tests
         }
 
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryUntilEvaluatesToTrueAsync()
+        public void Retry_Static_ShouldRetryUntilEvaluatesToTrue()
         {
             // fail on all retries
             // this will ignore the maxRetries limit, if the evaluation parameters return false
             var timeBetweenRetries = TimeSpan.FromMilliseconds(150);
             const int maxRetries = 1;
             var i = 0;
-            Assert.ThrowsAsync<RetryTimeoutException>(async () =>
+            Assert.Throws<RetryTimeoutException>(() =>
             {
-                await Retry.DoAsync(async (iteration, max) =>
+                Retry.Do((iteration, max) =>
                 {
                     i++;
                     throw new RetryTestException();
@@ -85,15 +83,15 @@ namespace Retry.Tests
         }
 
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryOnlyOnSpecifiedExceptionsAsync()
+        public void Retry_Static_ShouldRetryOnlyOnSpecifiedExceptions()
         {
             var timeBetweenRetries = TimeSpan.FromMilliseconds(150);
             const int maxRetries = 1;
             // we are only listening for RetryTestExceptions
             // if any other type of exception is thrown, it will be rethrown and no retry is performed
-            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                await Retry.DoAsync(async (iteration, max) =>
+                Retry.Do((iteration, max) =>
                 {
                     throw new InvalidOperationException();
                 }, timeBetweenRetries,

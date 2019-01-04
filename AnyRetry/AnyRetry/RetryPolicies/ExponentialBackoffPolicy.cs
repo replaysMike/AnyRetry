@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Retry.RetryPolicies
+namespace AnyRetry.RetryPolicies
 {
     /// <summary>
     /// Retry policy that will apply an exponential operation to backoff the retry delay

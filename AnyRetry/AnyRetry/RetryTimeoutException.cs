@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Retry
+namespace AnyRetry
 {
     /// <summary>
     /// Retry timeout exception

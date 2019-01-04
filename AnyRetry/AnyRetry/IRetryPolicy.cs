@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Retry
+namespace AnyRetry
 {
     /// <summary>
     /// Retry policy controls how to delay between retries

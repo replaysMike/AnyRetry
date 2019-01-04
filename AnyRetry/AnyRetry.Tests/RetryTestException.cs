@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Retry.Tests
+namespace AnyRetry.Tests
 {
     public class RetryTestException : Exception
     {

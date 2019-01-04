@@ -1,7 +1,7 @@
-﻿using Retry.Math;
+﻿using AnyRetry.Math;
 using System;
 
-namespace Retry.RetryPolicies
+namespace AnyRetry.RetryPolicies
 {
     /// <summary>
     /// Retry policy that will apply an easing operation to backoff the retry delay

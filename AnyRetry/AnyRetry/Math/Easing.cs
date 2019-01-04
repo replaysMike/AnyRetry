@@ -1,4 +1,4 @@
-﻿namespace Retry.Math
+﻿namespace AnyRetry.Math
 {
     /// <summary>
     /// Easings library - create numbers based on curved easing algorithms

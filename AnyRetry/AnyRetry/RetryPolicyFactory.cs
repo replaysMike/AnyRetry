@@ -1,6 +1,6 @@
-﻿using Retry.RetryPolicies;
+﻿using AnyRetry.RetryPolicies;
 
-namespace Retry
+namespace AnyRetry
 {
     /// <summary>
     /// Factory for Retry Policies

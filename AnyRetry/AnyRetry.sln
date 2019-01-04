@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Retry", "Retry\Retry.csproj", "{4359B14B-1399-4E7A-87B1-B21AEF72CB2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyRetry", "AnyRetry\AnyRetry.csproj", "{4359B14B-1399-4E7A-87B1-B21AEF72CB2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Retry.Tests", "Retry.Tests\Retry.Tests.csproj", "{71B6A492-0A3C-4B9B-9F11-25E0AFD876AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyRetry.Tests", "AnyRetry.Tests\AnyRetry.Tests.csproj", "{71B6A492-0A3C-4B9B-9F11-25E0AFD876AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

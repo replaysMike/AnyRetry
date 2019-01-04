@@ -4,11 +4,11 @@
     <TargetFrameworks>net45;netstandard2.0;net46;net461;net462;net47</TargetFrameworks>
     <Authors>Michael Brown</Authors>
     <Company>Refactor Software</Company>
-    <Description>A simple library for retrying operations.</Description>
-    <PackageReleaseNotes>A simple library for retrying operations.</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/replaysMike/Retry</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/replaysMike/Retry</RepositoryUrl>
-    <PackageTags>retry async asynchronous refactor software michael brown</PackageTags>
+    <Description>A simple library for retrying operations with backoff and async support.</Description>
+    <PackageReleaseNotes>A simple library for retrying operations with backoff and async support.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/replaysMike/AnyRetry</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/replaysMike/AnyRetry</RepositoryUrl>
+    <PackageTags>retry anyretry async asynchronous refactor software michael brown</PackageTags>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.0</Version>

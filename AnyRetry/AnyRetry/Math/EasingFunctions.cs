@@ -1,4 +1,4 @@
-﻿namespace Retry.Math
+﻿namespace AnyRetry.Math
 {
     /// <summary>
     /// An easing function

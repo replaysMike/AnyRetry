@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Retry
+namespace AnyRetry
 {
     public static partial class Retry
     {

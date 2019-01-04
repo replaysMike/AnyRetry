@@ -1,7 +1,7 @@
-﻿using Retry.Math;
+﻿using AnyRetry.Math;
 using System;
 
-namespace Retry
+namespace AnyRetry
 {
     /// <summary>
     /// Options for a retry policy
