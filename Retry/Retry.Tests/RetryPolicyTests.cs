@@ -17,7 +17,7 @@ namespace Retry.Tests
             var retryTimes = new List<TimeSpan>();
             Assert.Throws<RetryTimeoutException>(() =>
             {
-                Retry.Do(() =>
+                Retry.Do((interval, count) =>
                 {
                     retryTimes.Add(DateTime.Now.Subtract(lastTime));
                     lastTime = DateTime.Now;
