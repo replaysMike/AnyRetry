@@ -1,4 +1,11 @@
 # AnyRetry
+
+[![nuget](https://img.shields.io/nuget/v/AnyRetry.svg)](https://www.nuget.org/packages/AnyRetry/)
+[![nuget](https://img.shields.io/nuget/dt/AnyRetry.svg)](https://www.nuget.org/packages/AnyRetry/)
+[![Build status](https://ci.appveyor.com/api/projects/status/gfwjabg1pta7em94?svg=true)](https://ci.appveyor.com/project/MichaelBrown/anyretry)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8001bb10a20c4456a98ed4dde145350a)](https://app.codacy.com/app/replaysMike/AnyRetry?utm_source=github.com&utm_medium=referral&utm_content=replaysMike/AnyRetry&utm_campaign=Badge_Grade_Dashboard)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/85f671af543f46a599cafd10dab36e5a)](https://www.codacy.com/app/replaysMike/AnyRetry?utm_source=github.com&utm_medium=referral&utm_content=replaysMike/AnyRetry&utm_campaign=Badge_Coverage)
+
 A simple CSharp library for retrying operations with backoff and async support.
 
 ## Description
