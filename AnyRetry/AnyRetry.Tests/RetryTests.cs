@@ -23,6 +23,24 @@ namespace AnyRetry.Tests
         }
 
         [Test]
+        public void Retry_Parameterized_Static_ShouldRetryOnce()
+        {
+            var retriesPerformed = 0;
+            const int maxRetries = 5;
+            // fail on the first try, second try will succeed
+            Retry.Do((retryInterval, retryCount) =>
+            {
+                Assert.AreEqual(retriesPerformed, retryInterval);
+                Assert.AreEqual(maxRetries, retryCount);
+                retriesPerformed++;
+                if (retriesPerformed == 1)
+                    throw new RetryTestException();
+            }, TimeSpan.FromMilliseconds(10), maxRetries);
+
+            Assert.AreEqual(2, retriesPerformed);
+        }
+
+        [Test]
         public void Retry_Static_ShouldRetryUntilMax()
         {
             var retriesPerformed = 0;
@@ -32,6 +50,25 @@ namespace AnyRetry.Tests
             {
                 Retry.Do(() =>
                 {
+                    retriesPerformed++;
+                    throw new RetryTestException();
+                }, TimeSpan.FromMilliseconds(10), maxRetries);
+            });
+            Assert.AreEqual(5, retriesPerformed);
+        }
+
+        [Test]
+        public void Retry_Parameterized_Static_ShouldRetryUntilMax()
+        {
+            var retriesPerformed = 0;
+            const int maxRetries = 5;
+            // fail on all retries
+            Assert.Throws<RetryTimeoutException>(() =>
+            {
+                Retry.Do((retryInterval, retryCount) =>
+                {
+                    Assert.AreEqual(retriesPerformed, retryInterval);
+                    Assert.AreEqual(maxRetries, retryCount);
                     retriesPerformed++;
                     throw new RetryTestException();
                 }, TimeSpan.FromMilliseconds(10), maxRetries);

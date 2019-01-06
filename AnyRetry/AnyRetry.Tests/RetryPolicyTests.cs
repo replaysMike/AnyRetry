@@ -96,7 +96,7 @@ namespace AnyRetry.Tests
             var maxTimeBetweenRetries = TimeSpan.FromMilliseconds(500);
             var maxRetries = 10;
             var retryTimes = new List<TimeSpan>();
-            var retryPolicy = RetryPolicyFactory.Create(RetryPolicy.EasedBackoff, new RetryPolicyOptions { EasingFunction = Math.EasingFunction.ExponentialEaseOut, MaxRetryInterval = maxTimeBetweenRetries });
+            var retryPolicy = RetryPolicyFactory.Create(RetryPolicy.EasedBackoff, new RetryPolicyOptions { EasingFunction = AnyRetry.Math.EasingFunction.ExponentialEaseOut, MaxRetryInterval = maxTimeBetweenRetries });
 
             for(var i = 0; i < maxRetries; i++)
                 retryTimes.Add(retryPolicy.ApplyPolicy(RetryParameters.Create(startTime, timeBetweenRetries, i, maxRetries)));

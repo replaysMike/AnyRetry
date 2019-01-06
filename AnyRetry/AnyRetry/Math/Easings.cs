@@ -8,12 +8,12 @@
         /// <summary>
         /// Constant Pi.
         /// </summary>
-        private const double PI = System.Math.PI;
+        private const double Pi = System.Math.PI;
 
         /// <summary>
         /// Constant Pi / 2.
         /// </summary>
-        private const double HALFPI = System.Math.PI / 2.0;
+        private const double HalfPi = System.Math.PI / 2.0;
 
         /// <summary>
         /// Interpolate using the specified function.
@@ -239,7 +239,7 @@
         /// </summary>
         public static double SineEaseIn(double p)
         {
-            return System.Math.Sin((p - 1) * HALFPI) + 1;
+            return System.Math.Sin((p - 1) * HalfPi) + 1;
         }
 
         /// <summary>
@@ -247,7 +247,7 @@
         /// </summary>
         public static double SineEaseOut(double p)
         {
-            return System.Math.Sin(p * HALFPI);
+            return System.Math.Sin(p * HalfPi);
         }
 
         /// <summary>
@@ -255,7 +255,7 @@
         /// </summary>
         public static double SineEaseInOut(double p)
         {
-            return 0.5d * (1 - System.Math.Cos(p * PI));
+            return 0.5d * (1 - System.Math.Cos(p * Pi));
         }
 
         /// <summary>
@@ -332,7 +332,7 @@
         /// </summary>
         public static double ElasticEaseIn(double p)
         {
-            return System.Math.Sin(13 * HALFPI * p) * System.Math.Pow(2, 10 * (p - 1));
+            return System.Math.Sin(13 * HalfPi * p) * System.Math.Pow(2, 10 * (p - 1));
         }
 
         /// <summary>
@@ -340,7 +340,7 @@
         /// </summary>
         public static double ElasticEaseOut(double p)
         {
-            return System.Math.Sin(-13 * HALFPI * (p + 1)) * System.Math.Pow(2, -10 * p) + 1;
+            return System.Math.Sin(-13 * HalfPi * (p + 1)) * System.Math.Pow(2, -10 * p) + 1;
         }
 
         /// <summary>
@@ -352,11 +352,11 @@
         {
             if (p < 0.5d)
             {
-                return 0.5d * System.Math.Sin(13 * HALFPI * (2 * p)) * System.Math.Pow(2, 10 * ((2 * p) - 1));
+                return 0.5d * System.Math.Sin(13 * HalfPi * (2 * p)) * System.Math.Pow(2, 10 * ((2 * p) - 1));
             }
             else
             {
-                return 0.5d * (System.Math.Sin(-13 * HALFPI * ((2 * p - 1) + 1)) * System.Math.Pow(2, -10 * (2 * p - 1)) + 2);
+                return 0.5d * (System.Math.Sin(-13 * HalfPi * ((2 * p - 1) + 1)) * System.Math.Pow(2, -10 * (2 * p - 1)) + 2);
             }
         }
 
@@ -365,7 +365,7 @@
         /// </summary>
         public static double BackEaseIn(double p)
         {
-            return p * p * p - p * System.Math.Sin(p * PI);
+            return p * p * p - p * System.Math.Sin(p * Pi);
         }
 
         /// <summary>
@@ -374,7 +374,7 @@
         public static double BackEaseOut(double p)
         {
             double f = (1 - p);
-            return 1 - (f * f * f - f * System.Math.Sin(f * PI));
+            return 1 - (f * f * f - f * System.Math.Sin(f * Pi));
         }
 
         /// <summary>
@@ -387,12 +387,12 @@
             if (p < 0.5d)
             {
                 double f = 2 * p;
-                return 0.5d * (f * f * f - f * System.Math.Sin(f * PI));
+                return 0.5d * (f * f * f - f * System.Math.Sin(f * Pi));
             }
             else
             {
                 double f = (1 - (2 * p - 1));
-                return 0.5d * (1 - (f * f * f - f * System.Math.Sin(f * PI))) + 0.5d;
+                return 0.5d * (1 - (f * f * f - f * System.Math.Sin(f * Pi))) + 0.5d;
             }
         }
 

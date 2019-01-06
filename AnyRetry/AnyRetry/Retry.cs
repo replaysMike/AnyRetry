@@ -48,7 +48,6 @@ namespace AnyRetry
             PerformAction<object>((x, y) => { action.Invoke(x, y); return null; }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
         }
 
-
         /// <summary>
         /// Perform an asynchronous retry up to the maximum specified limit
         /// </summary>
