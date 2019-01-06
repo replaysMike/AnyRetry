@@ -39,6 +39,16 @@ namespace AnyRetry
         /// <param name="action"></param>
         /// <param name="retryInterval">How often to perform the retry.</param>
         /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        public static async Task DoAsync(RetryActionAsync action, TimeSpan retryInterval, int retryLimit, Action<Exception, int, int> onFailure)
+            => await DoAsync(async (iteration, max) => await action.Invoke().ConfigureAwait(false), retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
+
+        /// <summary>
+        /// Perform an asynchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
         /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
         /// <returns></returns>
         public static async Task DoAsync(RetryActionAsync action, TimeSpan retryInterval, int retryLimit, params Type[] exceptionTypes)
@@ -104,6 +114,16 @@ namespace AnyRetry
         /// <param name="action"></param>
         /// <param name="retryInterval">How often to perform the retry.</param>
         /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        public static async Task DoAsync(RetryActionWithParametersAsync action, TimeSpan retryInterval, int retryLimit, Action<Exception, int, int> onFailure)
+            => await DoAsync(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
+
+        /// <summary>
+        /// Perform an asynchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
         /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
         /// <returns></returns>
         public static async Task DoAsync(RetryActionWithParametersAsync action, TimeSpan retryInterval, int retryLimit, params Type[] exceptionTypes)
@@ -154,6 +174,16 @@ namespace AnyRetry
         /// <returns></returns>
         public static async Task DoAsync<T>(RetryActionWithParametersAndResultAsync<T> action, int retryLimit)
             => await DoAsync<T>(action, TimeSpan.FromSeconds(1), retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null).ConfigureAwait(false);
+
+        /// <summary>
+        /// Perform an asynchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        public static async Task DoAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, Action<Exception, int, int> onFailure)
+            => await DoAsync<T>(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
 
         /// <summary>
         /// Perform an asynchronous retry up to the maximum specified limit

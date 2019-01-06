@@ -36,6 +36,16 @@ namespace AnyRetry
         /// <param name="action"></param>
         /// <param name="retryInterval">How often to perform the retry.</param>
         /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        public static void Do(RetryAction action, TimeSpan retryInterval, int retryLimit, Action<Exception, int, int> onFailure)
+            => Do((iteration, max) => action.Invoke(), retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
         /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
         public static void Do(RetryAction action, TimeSpan retryInterval, int retryLimit, params Type[] exceptionTypes)
             => Do((iteration, max) => action.Invoke(), retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null, exceptionTypes);
@@ -88,6 +98,16 @@ namespace AnyRetry
         /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
         public static void Do(RetryActionWithParameters action, TimeSpan retryInterval, int retryLimit)
             => Do(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        public static void Do(RetryActionWithParameters action, TimeSpan retryInterval, int retryLimit, Action<Exception, int, int> onFailure)
+            => Do(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
 
         /// <summary>
         /// Perform an synchronous retry up to the maximum specified limit
@@ -152,6 +172,16 @@ namespace AnyRetry
         /// <returns></returns>
         public static T Do<T>(RetryActionWithParametersAndResult<T> action, TimeSpan retryInterval, int retryLimit)
             => Do<T>(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        public static T Do<T>(RetryActionWithParametersAndResult<T> action, TimeSpan retryInterval, int retryLimit, Action<Exception, int, int> onFailure)
+            => Do<T>(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
 
         /// <summary>
         /// Perform an synchronous retry up to the maximum specified limit
