@@ -94,7 +94,7 @@ namespace AnyRetry.Tests.Math
         public void Should_Interpolate_ElasticEaseIn()
         {
             var value = Easings.Interpolate(100, EasingFunction.ElasticEaseIn);
-            Assert.AreEqual(4.3101248653016293E+284d, value);
+            Assert.IsTrue(value >= 4.3101248653016293E+284d && value <= 4.3103999569421651E+284d);
         }
 
         [Test]
@@ -220,7 +220,7 @@ namespace AnyRetry.Tests.Math
         public void Should_Interpolate_SineEaseOut()
         {
             var value = Easings.Interpolate(100, EasingFunction.SineEaseOut);
-            Assert.AreEqual(9.8219336186423597E-16d, value);
+            Assert.IsTrue(value >= 9.8219336186423597E-16d && value <= 9.8239558848911557E-16d);
         }
     }
 }
