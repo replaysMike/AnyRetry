@@ -68,7 +68,7 @@ var maxRetries = 10;
 var retryEvery = TimeSpan.FromSeconds(5);
 var policyOptions = new RetryPolicyOptions { 
     EasingFunction = EasingFunction.QuadraticEaseOut,
-    MaxRetryInterval = TimeSpan.FromSeconds(30);
+    MaxRetryInterval = TimeSpan.FromSeconds(30)
 };
 Retry.Do(() =>
 {
