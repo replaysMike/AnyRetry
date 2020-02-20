@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;netstandard2.0;net46;net461;net462;net47</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net45;net46;net461;net462;net47;net48</TargetFrameworks>
     <Authors>Michael Brown</Authors>
     <Company>Refactor Software</Company>
     <Description>A simple library for retrying operations with backoff and async support.</Description>
@@ -18,11 +18,11 @@
     <DefineConstants>FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net461' OR '$(TargetFramework)'=='net462'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' OR '$(TargetFramework)'=='netstandard2.1' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net461' OR '$(TargetFramework)'=='net462'">
     <DefineConstants>FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER;FEATURE_COMPRESSION</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net47'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net47' OR '$(TargetFramework)'=='net48'">
     <DefineConstants>FEATURE_CUSTOM_VALUETUPLE;FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER;FEATURE_COMPRESSION</DefineConstants>
   </PropertyGroup>
 

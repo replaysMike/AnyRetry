@@ -19,6 +19,16 @@ namespace AnyRetry
         public TimeSpan MaxRetryInterval { get; set; }
 
         /// <summary>
+        /// When using an EasedBackoffPolicy, specifies the number of total steps between the initial retry count and <see cref="MaxRetryInterval"/>.
+        /// Default: RetryCount is used to determine the number of steps
+        /// </summary>
+        /// <remarks>
+        /// If not specified the easing will be spread over the distance between the specified retry count and <see cref="MaxRetryInterval"/>.
+        /// When specified, the <see cref="MaxRetryInterval"/> will indicate how many steps will occur and peak at the final <see cref="MaxRetryInterval"/>
+        /// </remarks>
+        public int? MaxRetrySteps { get; set; }
+
+        /// <summary>
         /// Create a empty policy options
         /// </summary>
         public static RetryPolicyOptions None => new RetryPolicyOptions();

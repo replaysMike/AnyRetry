@@ -15,6 +15,7 @@ namespace AnyRetry.Tests
             // fail on the first try, second try will succeed
             await Retry.DoAsync(async () =>
             {
+                await Task.Delay(10);
                 retriesPerformed++;
                 if (retriesPerformed == 1)
                     throw new RetryTestException();
@@ -24,7 +25,7 @@ namespace AnyRetry.Tests
         }
 
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryUntilMaxAsync()
+        public void RetryAsyc_Static_ShouldRetryUntilMax()
         {
             var retriesPerformed = 0;
             const int maxRetries = 5;
@@ -33,6 +34,7 @@ namespace AnyRetry.Tests
                 {
                     await Retry.DoAsync(async () =>
                     {
+                        await Task.Delay(10);
                         retriesPerformed++;
                         throw new RetryTestException();
                     }, TimeSpan.FromMilliseconds(10), maxRetries);
@@ -42,7 +44,7 @@ namespace AnyRetry.Tests
         }
 
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryIntervalElapsedAsync()
+        public void RetryAsyc_Static_ShouldRetryIntervalElapsed()
         {
             // fail on all retries
             var startTime = DateTime.Now;
@@ -51,6 +53,7 @@ namespace AnyRetry.Tests
             {
                 await Retry.DoAsync(async () =>
                 {
+                    await Task.Delay(10);
                     throw new RetryTestException();
                 }, timeBetweenRetries, 1, RetryPolicy.StaticDelay);
             });
@@ -58,7 +61,7 @@ namespace AnyRetry.Tests
         }
 
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryUntilEvaluatesToTrueAsync()
+        public void RetryAsyc_Static_ShouldRetryUntilEvaluatesToTrue()
         {
             // fail on all retries
             // this will ignore the maxRetries limit, if the evaluation parameters return false
@@ -69,6 +72,7 @@ namespace AnyRetry.Tests
             {
                 await Retry.DoAsync(async (iteration, max) =>
                 {
+                    await Task.Delay(10);
                     i++;
                     throw new RetryTestException();
                 }, timeBetweenRetries,
@@ -85,7 +89,7 @@ namespace AnyRetry.Tests
         }
 
         [Test]
-        public async Task RetryAsyc_Static_ShouldRetryOnlyOnSpecifiedExceptionsAsync()
+        public void RetryAsyc_Static_ShouldRetryOnlyOnSpecifiedExceptions()
         {
             var timeBetweenRetries = TimeSpan.FromMilliseconds(150);
             const int maxRetries = 1;
@@ -95,6 +99,7 @@ namespace AnyRetry.Tests
             {
                 await Retry.DoAsync(async (iteration, max) =>
                 {
+                    await Task.Delay(10);
                     throw new InvalidOperationException();
                 }, timeBetweenRetries,
                     maxRetries,
