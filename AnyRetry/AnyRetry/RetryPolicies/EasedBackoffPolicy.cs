@@ -17,11 +17,13 @@ namespace AnyRetry.RetryPolicies
 
         public TimeSpan ApplyPolicy(RetryParameters retryParameters)
         {
+            var retrySteps = _options.MaxRetrySteps ?? retryParameters.RetryIteration;
+            var retryCount = _options.MaxRetrySteps ?? retryParameters.RetryCount;
             var maxInterval = _options.MaxRetryInterval;
             if (maxInterval == TimeSpan.MinValue)
-                maxInterval = TimeSpan.FromMilliseconds(retryParameters.RetryInterval.TotalMilliseconds * retryParameters.RetryIteration);
+                maxInterval = TimeSpan.FromMilliseconds(retryParameters.RetryInterval.TotalMilliseconds * retrySteps);
             var minInterval = retryParameters.RetryInterval;
-            return GetRetryTimeoutSeconds(retryParameters.RetryIteration, retryParameters.RetryCount, minInterval, maxInterval, _options.EasingFunction);
+            return GetRetryTimeoutSeconds(retryParameters.RetryIteration, retryCount, minInterval, maxInterval, _options.EasingFunction);
         }
 
         /// <summary>
@@ -37,6 +39,7 @@ namespace AnyRetry.RetryPolicies
         {
             // produce a number between 0 and 1.0
             var t = (double)retryIteration / (retryCount - 1);
+            if (t > 1.0) t = 1.0;
             // easeVal contains number between 0 and 1.0 but with easing applied
             var easeVal = Easings.Interpolate(t, easingFunction);
 
