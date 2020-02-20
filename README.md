@@ -68,13 +68,16 @@ var maxRetries = 10;
 var retryEvery = TimeSpan.FromSeconds(5);
 var policyOptions = new RetryPolicyOptions { 
     EasingFunction = EasingFunction.QuadraticEaseOut,
-    MaxRetryInterval = TimeSpan.FromSeconds(30)
+    MaxRetryInterval = TimeSpan.FromSeconds(30),
+    // optional: specify we want to ease over 5 retries, not the default of maxRetries=10
+    MaxRetrySteps = 5
 };
 Retry.Do(() =>
 {
     DoMyNetworkOperation();
 }, retryEvery, maxRetries, RetryPolicy.EasedBackoff, policyOptions);
 ```
+If you wish to specify easing over a period shorter than the maximum number of retries, use the `MaxRetrySteps` option and specify a value shorter than the maximum number of retries. When it hits this limit it will plateau and use the `MaxRetryInterval` for the remaining retries.
 
 ### Asynchronous usage
 
