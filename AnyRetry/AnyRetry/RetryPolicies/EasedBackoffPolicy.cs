@@ -43,10 +43,10 @@ namespace AnyRetry.RetryPolicies
             // easeVal contains number between 0 and 1.0 but with easing applied
             var easeVal = Easings.Interpolate(t, easingFunction);
 
-            if (easeVal == 0)
-                return minDelay;
+            var result = TimeSpan.FromTicks((long)(maxDelay.Ticks * easeVal)) + minDelay;
+            if (result > maxDelay)
+                return maxDelay;
 
-            var result = TimeSpan.FromTicks((long)(maxDelay.Ticks * easeVal));
             return result;
         }
     }

@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AnyRetry.Tests
 {
@@ -138,5 +140,46 @@ namespace AnyRetry.Tests
                 );
             });
         }
+
+        [Test]
+        public void Retry_SineEaseIn_WithSteps_ShouldBeCorrect()
+        {
+            var testLog = new List<long>();
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            Assert.Throws<RetryTimeoutException>(() =>
+            {
+                Retry.Do((retryIteration, retryLimit) =>
+                {
+                    if (retryIteration > 0)
+                    {
+                        testLog.Add(sw.ElapsedMilliseconds);
+                        Console.WriteLine($"{sw.ElapsedMilliseconds}ms");
+                    }
+                    sw.Restart();
+                    throw new Exception("test");
+                }, TimeSpan.FromMilliseconds(100), 12, RetryPolicy.EasedBackoff, new RetryPolicyOptions
+                {
+                    EasingFunction = AnyRetry.Math.EasingFunction.SineEaseIn,
+                    MaxRetryInterval = TimeSpan.FromMilliseconds(1000),
+                    MaxRetrySteps = 10
+                });
+            });
+            // make sure the test times are approximately valid
+            // note: the very first attempt is not logged, so only 11 results instead of 12
+            const int toleranceMs = 20; // this seems to be enough on a typical machine, but may vary by hardware
+            Assert.That(testLog.Skip(0).First(), Is.EqualTo(100).Within(toleranceMs));
+            Assert.That(testLog.Skip(1).First(), Is.EqualTo(115).Within(toleranceMs));
+            Assert.That(testLog.Skip(2).First(), Is.EqualTo(160).Within(toleranceMs));
+            Assert.That(testLog.Skip(3).First(), Is.EqualTo(230).Within(toleranceMs));
+            Assert.That(testLog.Skip(4).First(), Is.EqualTo(330).Within(toleranceMs));
+            Assert.That(testLog.Skip(5).First(), Is.EqualTo(460).Within(toleranceMs));
+            Assert.That(testLog.Skip(6).First(), Is.EqualTo(600).Within(toleranceMs));
+            Assert.That(testLog.Skip(7).First(), Is.EqualTo(760).Within(toleranceMs));
+            Assert.That(testLog.Skip(8).First(), Is.EqualTo(930).Within(toleranceMs));
+            Assert.That(testLog.Skip(9).First(), Is.EqualTo(1000).Within(toleranceMs));
+            Assert.That(testLog.Skip(10).First(), Is.EqualTo(1000).Within(toleranceMs));
+        }
+
     }
 }
