@@ -167,7 +167,7 @@ namespace AnyRetry.Tests
             });
             // make sure the test times are approximately valid
             // note: the very first attempt is not logged, so only 11 results instead of 12
-            const int toleranceMs = 20; // this seems to be enough on a typical machine, but may vary by hardware
+            const int toleranceMs = 50; // this seems to be enough on a typical machine, but may vary by hardware
             Assert.That(testLog.Skip(0).First(), Is.EqualTo(100).Within(toleranceMs));
             Assert.That(testLog.Skip(1).First(), Is.EqualTo(115).Within(toleranceMs));
             Assert.That(testLog.Skip(2).First(), Is.EqualTo(160).Within(toleranceMs));
