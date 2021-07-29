@@ -1,29 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net45;net46;net461;net462;net47;net48</TargetFrameworks>
-    <Authors>Michael Brown</Authors>
-    <Company>Refactor Software</Company>
-    <Description>A simple library for retrying operations with backoff and async support.</Description>
-    <PackageReleaseNotes>A simple library for retrying operations with backoff and async support.</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/replaysMike/AnyRetry</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/replaysMike/AnyRetry</RepositoryUrl>
-    <PackageTags>retry anyretry async asynchronous refactor software michael brown</PackageTags>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    <Version>1.0.0</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net45;net46;net461;net462;net47;net48</TargetFrameworks>
+		<Authors>Michael Brown</Authors>
+		<Company>Refactor Software</Company>
+		<Description>A simple library for retrying operations with backoff and async support.</Description>
+		<PackageReleaseNotes>A simple library for retrying operations with backoff and async support.</PackageReleaseNotes>
+		<PackageProjectUrl>https://github.com/replaysMike/AnyRetry</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/replaysMike/AnyRetry</RepositoryUrl>
+		<PackageTags>retry anyretry async asynchronous refactor software michael brown</PackageTags>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<Version>1.0.0</Version>
+		<LangVersion>latest</LangVersion>
+		<PackageIcon>any.png</PackageIcon>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\AnyRetryStrongNameKey.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
-    <DefineConstants>FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+		<DefineConstants>FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER</DefineConstants>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' OR '$(TargetFramework)'=='netstandard2.1' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net461' OR '$(TargetFramework)'=='net462'">
-    <DefineConstants>FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER;FEATURE_COMPRESSION</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' OR '$(TargetFramework)'=='netstandard2.1' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net461' OR '$(TargetFramework)'=='net462'">
+		<DefineConstants>FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER;FEATURE_COMPRESSION</DefineConstants>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net47' OR '$(TargetFramework)'=='net48'">
-    <DefineConstants>FEATURE_CUSTOM_VALUETUPLE;FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER;FEATURE_COMPRESSION</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net47' OR '$(TargetFramework)'=='net48'">
+		<DefineConstants>FEATURE_CUSTOM_VALUETUPLE;FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER;FEATURE_COMPRESSION</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="any.png" Pack="true" PackagePath="" />
+	</ItemGroup>
 
 </Project>

@@ -82,6 +82,7 @@ namespace AnyRetry
                 }
                 catch (Exception ex)
                 {
+                    await Task.Yield();
                     onFailure?.Invoke(ex, retryIteration, retryLimit);
                     exceptions.Add(ex);
                     if (exceptionTypes == null || exceptionTypes.Length == 0 || exceptionTypes.Contains<Type>(ex.GetType()))

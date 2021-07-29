@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace AnyRetry
 {
@@ -80,6 +81,7 @@ namespace AnyRetry
                 }
                 catch (Exception ex)
                 {
+                    Task.Yield();
                     onFailure?.Invoke(ex, retryIteration, retryLimit);
                     exceptions.Add(ex);
                     if (exceptionTypes == null || exceptionTypes.Length == 0 || exceptionTypes.Contains<Type>(ex.GetType()))
