@@ -49,6 +49,14 @@ namespace AnyRetry
         /// Perform an asynchronous retry up to the maximum specified limit
         /// </summary>
         /// <param name="action"></param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        public static async Task DoAsync(RetryActionAsync action, Action<Exception, int, int> onFailure)
+            => await DoAsync(async (iteration, max) => await action.Invoke(), DefaultRetryInterval, DefaultRetryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
+
+        /// <summary>
+        /// Perform an asynchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
         /// <param name="retryInterval">How often to perform the retry.</param>
         /// <param name="retryLimit">The maximum number of times to retry</param>
         /// <param name="onFailure">Will be called upon an exception thrown</param>
@@ -138,6 +146,15 @@ namespace AnyRetry
         /// <param name="onFailure">Will be called upon an exception thrown</param>
         public static async Task DoAsync(RetryActionWithParametersAsync action, TimeSpan retryInterval, int retryLimit, Action<Exception, int, int> onFailure)
             => await DoAsync(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
+
+        /// <summary>
+        /// Perform an asynchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
+        /// <returns></returns>
+        public static async Task DoAsync(RetryActionWithParametersAsync action, params Type[] exceptionTypes)
+            => await DoAsync(action, DefaultRetryInterval, DefaultRetryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null, exceptionTypes);
 
         /// <summary>
         /// Perform an asynchronous retry up to the maximum specified limit

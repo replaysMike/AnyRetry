@@ -14,12 +14,12 @@ namespace AnyRetry
         /// <summary>
         /// The default number of times to retry
         /// </summary>
-        private const int DefaultRetryLimit = int.MaxValue;
+        public static int DefaultRetryLimit = int.MaxValue;
 
         /// <summary>
-        /// The default retry interval
+        /// The default retry interval (1 second)
         /// </summary>
-        private static readonly TimeSpan DefaultRetryInterval = TimeSpan.FromSeconds(1);
+        public static TimeSpan DefaultRetryInterval = TimeSpan.FromSeconds(1);
 
         /// <summary>
         /// An synchronous retry action to perform
@@ -73,7 +73,7 @@ namespace AnyRetry
         /// <returns></returns>
         public static T Do<T>(RetryActionWithParametersAndResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
-            return PerformAction<T>((x, y) => action.Invoke(x, y), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
+            return PerformAction((x, y) => action.Invoke(x, y), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
         }
 
         private static T PerformAction<T>(RetryActionWithParametersAndResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
