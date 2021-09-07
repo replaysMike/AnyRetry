@@ -6,7 +6,7 @@ namespace AnyRetry.RetryPolicies
     /// <summary>
     /// Retry policy that will apply an exponential operation to backoff the retry delay
     /// </summary>
-    public class ExponentialBackoffPolicy : IRetryPolicy
+    public sealed class ExponentialBackoffPolicy : IRetryPolicy
     {
         /// <summary>
         /// e.g. 20% spread. e.g. a 2000ms delay could actually delay between 1600 and 2400 ms, randomly

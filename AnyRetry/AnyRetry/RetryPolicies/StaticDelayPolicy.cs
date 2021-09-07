@@ -5,7 +5,7 @@ namespace AnyRetry.RetryPolicies
     /// <summary>
     /// A static amount of time to delay
     /// </summary>
-    public class StaticDelayPolicy : IRetryPolicy
+    public sealed class StaticDelayPolicy : IRetryPolicy
     {
         /// <summary>
         /// New static delay policy

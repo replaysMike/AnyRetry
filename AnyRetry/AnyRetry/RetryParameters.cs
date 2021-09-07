@@ -5,7 +5,7 @@ namespace AnyRetry
     /// <summary>
     /// The parameters of a retry operation
     /// </summary>
-    public class RetryParameters
+    public sealed class RetryParameters
     {
         /// <summary>
         /// The start time of the original operation

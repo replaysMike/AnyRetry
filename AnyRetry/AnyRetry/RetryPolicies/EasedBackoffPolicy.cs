@@ -6,7 +6,7 @@ namespace AnyRetry.RetryPolicies
     /// <summary>
     /// Retry policy that will apply an easing operation to backoff the retry delay
     /// </summary>
-    public class EasedBackoffPolicy : IRetryPolicy
+    public sealed class EasedBackoffPolicy : IRetryPolicy
     {
         private readonly RetryPolicyOptions _options;
 

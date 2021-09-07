@@ -7,7 +7,8 @@ namespace AnyRetry
     /// <summary>
     /// Retry timeout exception
     /// </summary>
-    public class RetryTimeoutException : Exception
+    [Serializable]
+    public sealed class RetryTimeoutException : Exception
     {
         /// <summary>
         /// List of exceptions

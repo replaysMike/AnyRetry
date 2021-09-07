@@ -6,7 +6,7 @@ namespace AnyRetry
     /// <summary>
     /// Options for a retry policy
     /// </summary>
-    public class RetryPolicyOptions : IEquatable<RetryPolicyOptions>
+    public sealed class RetryPolicyOptions : IEquatable<RetryPolicyOptions>
     {
         /// <summary>
         /// The easing function to use for an EasedBackoffPolicy
