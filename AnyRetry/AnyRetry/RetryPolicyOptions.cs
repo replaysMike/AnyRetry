@@ -33,11 +33,13 @@ namespace AnyRetry
         /// </summary>
         public static RetryPolicyOptions None => new RetryPolicyOptions();
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return MaxRetryInterval.GetHashCode() ^ EasingFunction.GetHashCode();
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -48,6 +50,7 @@ namespace AnyRetry
             return Equals(objTyped);
         }
 
+        /// <inheritdoc/>
         public bool Equals(RetryPolicyOptions other)
         {
             if (other == null)

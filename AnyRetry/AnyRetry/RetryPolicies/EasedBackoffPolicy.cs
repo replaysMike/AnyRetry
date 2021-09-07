@@ -10,11 +10,20 @@ namespace AnyRetry.RetryPolicies
     {
         private readonly RetryPolicyOptions _options;
 
+        /// <summary>
+        /// New eased backoff policy
+        /// </summary>
+        /// <param name="options"></param>
         public EasedBackoffPolicy(RetryPolicyOptions options)
         {
             _options = options ?? new RetryPolicyOptions { EasingFunction = EasingFunction.ElasticEaseIn, MaxRetryInterval = TimeSpan.MinValue };
         }
 
+        /// <summary>
+        /// Apply the policy
+        /// </summary>
+        /// <param name="retryParameters"></param>
+        /// <returns></returns>
         public TimeSpan ApplyPolicy(RetryParameters retryParameters)
         {
             var retrySteps = _options.MaxRetrySteps ?? retryParameters.RetryIteration;

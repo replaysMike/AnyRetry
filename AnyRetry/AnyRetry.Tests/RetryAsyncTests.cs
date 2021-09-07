@@ -8,22 +8,22 @@ namespace AnyRetry.Tests
     [TestFixture]
     public class RetryAsyncTests
     {
-        [Test]
-        public async Task RetryAsync_Static_ShouldRetryOnceAsync()
-        {
-            //var retriesPerformed = 0;
-            //const int maxRetries = 5;
-            //// fail on the first try, second try will succeed
-            //await Retry.DoAsync(async () =>
-            //{
-            //    await Task.Delay(10);
-            //    retriesPerformed++;
-            //    if (retriesPerformed == 1)
-            //        throw new RetryTestException();
-            //}, TimeSpan.FromMilliseconds(10), maxRetries);
+        //[Test]
+        //public async Task RetryAsync_Static_ShouldRetryOnceAsync()
+        //{
+        //    //var retriesPerformed = 0;
+        //    //const int maxRetries = 5;
+        //    //// fail on the first try, second try will succeed
+        //    //await Retry.DoAsync(async () =>
+        //    //{
+        //    //    await Task.Delay(10);
+        //    //    retriesPerformed++;
+        //    //    if (retriesPerformed == 1)
+        //    //        throw new RetryTestException();
+        //    //}, TimeSpan.FromMilliseconds(10), maxRetries);
 
-            //Assert.AreEqual(2, retriesPerformed);
-        }
+        //    //Assert.AreEqual(2, retriesPerformed);
+        //}
 
         [Test]
         public void RetryAsync_Static_ShouldRetryUntilMax()

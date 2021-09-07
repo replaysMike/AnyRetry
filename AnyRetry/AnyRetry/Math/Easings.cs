@@ -16,8 +16,10 @@
         private const double HalfPi = System.Math.PI / 2.0;
 
         /// <summary>
-        /// Interpolate using the specified function.
+        /// Interpolate using the specified function
         /// </summary>
+        /// <param name="p">The interpolated step value</param>
+        /// <param name="function">The easing function to use</param>
         public static double Interpolate(double p, EasingFunction function)
         {
             switch (function)
@@ -91,6 +93,7 @@
         /// <summary>
         /// Modeled after the line y = x
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double Linear(double p)
         {
             return p;
@@ -99,6 +102,7 @@
         /// <summary>
         /// Modeled after the parabola y = x^2
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuadraticEaseIn(double p)
         {
             return p * p;
@@ -107,6 +111,7 @@
         /// <summary>
         /// Modeled after the parabola y = -x^2 + 2x
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuadraticEaseOut(double p)
         {
             return -(p * (p - 2));
@@ -117,6 +122,7 @@
         /// y = (1/2)((2x)^2)             ; [0, 0.5)
         /// y = -(1/2)((2x-1)*(2x-3) - 1) ; [0.5, 1]
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuadraticEaseInOut(double p)
         {
             if (p < 0.5d)
@@ -132,6 +138,7 @@
         /// <summary>
         /// Modeled after the cubic y = x^3
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double CubicEaseIn(double p)
         {
             return p * p * p;
@@ -140,6 +147,7 @@
         /// <summary>
         /// Modeled after the cubic y = (x - 1)^3 + 1
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double CubicEaseOut(double p)
         {
             double f = (p - 1);
@@ -151,6 +159,7 @@
         /// y = (1/2)((2x)^3)       ; [0, 0.5)
         /// y = (1/2)((2x-2)^3 + 2) ; [0.5, 1]
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double CubicEaseInOut(double p)
         {
             if (p < 0.5d)
@@ -167,6 +176,7 @@
         /// <summary>
         /// Modeled after the quartic x^4
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuarticEaseIn(double p)
         {
             return p * p * p * p;
@@ -175,6 +185,7 @@
         /// <summary>
         /// Modeled after the quartic y = 1 - (x - 1)^4
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuarticEaseOut(double p)
         {
             double f = (p - 1);
@@ -182,10 +193,11 @@
         }
 
         /// <summary>
-        // Modeled after the piecewise quartic
-        // y = (1/2)((2x)^4)        ; [0, 0.5)
-        // y = -(1/2)((2x-2)^4 - 2) ; [0.5, 1]
+        /// Modeled after the piecewise quartic
+        /// y = (1/2)((2x)^4)        ; [0, 0.5)
+        /// y = -(1/2)((2x-2)^4 - 2) ; [0.5, 1]
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuarticEaseInOut(double p)
         {
             if (p < 0.5d)
@@ -202,6 +214,7 @@
         /// <summary>
         /// Modeled after the quintic y = x^5
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuinticEaseIn(double p)
         {
             return p * p * p * p * p;
@@ -210,6 +223,7 @@
         /// <summary>
         /// Modeled after the quintic y = (x - 1)^5 + 1
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuinticEaseOut(double p)
         {
             double f = (p - 1);
@@ -221,6 +235,7 @@
         /// y = (1/2)((2x)^5)       ; [0, 0.5)
         /// y = (1/2)((2x-2)^5 + 2) ; [0.5, 1]
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double QuinticEaseInOut(double p)
         {
             if (p < 0.5d)
@@ -237,6 +252,7 @@
         /// <summary>
         /// Modeled after quarter-cycle of sine wave
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double SineEaseIn(double p)
         {
             return System.Math.Sin((p - 1) * HalfPi) + 1;
@@ -245,6 +261,7 @@
         /// <summary>
         /// Modeled after quarter-cycle of sine wave (different phase)
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double SineEaseOut(double p)
         {
             return System.Math.Sin(p * HalfPi);
@@ -253,6 +270,7 @@
         /// <summary>
         /// Modeled after half sine wave
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double SineEaseInOut(double p)
         {
             return 0.5d * (1 - System.Math.Cos(p * Pi));
@@ -261,6 +279,7 @@
         /// <summary>
         /// Modeled after shifted quadrant IV of unit circle
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double CircularEaseIn(double p)
         {
             return 1 - System.Math.Sqrt(1 - (p * p));
@@ -269,6 +288,7 @@
         /// <summary>
         /// Modeled after shifted quadrant II of unit circle
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double CircularEaseOut(double p)
         {
             return System.Math.Sqrt((2 - p) * p);
@@ -279,6 +299,7 @@
         /// y = (1/2)(1 - Math.Sqrt(1 - 4x^2))           ; [0, 0.5)
         /// y = (1/2)(Math.Sqrt(-(2x - 3)*(2x - 1)) + 1) ; [0.5, 1]
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double CircularEaseInOut(double p)
         {
             if (p < 0.5d)
@@ -294,6 +315,7 @@
         /// <summary>
         /// Modeled after the exponential function y = 2^(10(x - 1))
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double ExponentialEaseIn(double p)
         {
             return (p == 0d) ? p : System.Math.Pow(2d, 10d * (p - 1d));
@@ -302,6 +324,7 @@
         /// <summary>
         /// Modeled after the exponential function y = -2^(-10x) + 1
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double ExponentialEaseOut(double p)
         {
             return (p == 1d) ? p : 1d - System.Math.Pow(2d, -10d * p);
@@ -312,6 +335,7 @@
         /// y = (1/2)2^(10(2x - 1))         ; [0,0.5)
         /// y = -(1/2)*2^(-10(2x - 1))) + 1 ; [0.5,1]
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double ExponentialEaseInOut(double p)
         {
             if (p == 0d || p == 1d)
@@ -330,6 +354,7 @@
         /// <summary>
         /// Modeled after the damped sine wave y = sin(13pi/2*x)*Math.Pow(2, 10 * (x - 1))
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double ElasticEaseIn(double p)
         {
             return System.Math.Sin(13 * HalfPi * p) * System.Math.Pow(2, 10 * (p - 1));
@@ -338,6 +363,7 @@
         /// <summary>
         /// Modeled after the damped sine wave y = sin(-13pi/2*(x + 1))*Math.Pow(2, -10x) + 1
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double ElasticEaseOut(double p)
         {
             return System.Math.Sin(-13 * HalfPi * (p + 1)) * System.Math.Pow(2, -10 * p) + 1;
@@ -348,6 +374,7 @@
         /// y = (1/2)*sin(13pi/2*(2*x))*Math.Pow(2, 10 * ((2*x) - 1))      ; [0,0.5)
         /// y = (1/2)*(sin(-13pi/2*((2x-1)+1))*Math.Pow(2,-10(2*x-1)) + 2) ; [0.5, 1]
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double ElasticEaseInOut(double p)
         {
             if (p < 0.5d)
@@ -363,6 +390,7 @@
         /// <summary>
         /// Modeled after the overshooting cubic y = x^3-x*sin(x*pi)
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double BackEaseIn(double p)
         {
             return p * p * p - p * System.Math.Sin(p * Pi);
@@ -370,7 +398,8 @@
 
         /// <summary>
         /// Modeled after overshooting cubic y = 1-((1-x)^3-(1-x)*sin((1-x)*pi))
-        /// </summary>	
+        /// </summary>
+        /// <param name="p">The step value</param>
         public static double BackEaseOut(double p)
         {
             double f = (1 - p);
@@ -382,6 +411,7 @@
         /// y = (1/2)*((2x)^3-(2x)*sin(2*x*pi))           ; [0, 0.5)
         /// y = (1/2)*(1-((1-x)^3-(1-x)*sin((1-x)*pi))+1) ; [0.5, 1]
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double BackEaseInOut(double p)
         {
             if (p < 0.5d)
@@ -398,6 +428,7 @@
 
         /// <summary>
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double BounceEaseIn(double p)
         {
             return 1 - BounceEaseOut(1 - p);
@@ -405,6 +436,7 @@
 
         /// <summary>
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double BounceEaseOut(double p)
         {
             if (p < 4 / 11.0d)
@@ -427,6 +459,7 @@
 
         /// <summary>
         /// </summary>
+        /// <param name="p">The step value</param>
         public static double BounceEaseInOut(double p)
         {
             if (p < 0.5d)

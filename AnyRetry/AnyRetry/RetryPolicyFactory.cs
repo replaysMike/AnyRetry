@@ -10,7 +10,8 @@ namespace AnyRetry
         /// <summary>
         /// Create a retry policy
         /// </summary>
-        /// <param name="policy"></param>
+        /// <param name="policy">Retry policy to use</param>
+        /// <param name="options">Retry policy options</param>
         /// <returns></returns>
         public static IRetryPolicy Create(RetryPolicy policy, RetryPolicyOptions options)
         {

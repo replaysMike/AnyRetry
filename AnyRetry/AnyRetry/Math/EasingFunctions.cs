@@ -5,6 +5,7 @@
     /// </summary>
     public enum EasingFunction
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         Linear,
         QuadraticEaseIn,
         QuadraticEaseOut,
@@ -36,5 +37,6 @@
         BounceEaseIn,
         BounceEaseOut,
         BounceEaseInOut
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 }

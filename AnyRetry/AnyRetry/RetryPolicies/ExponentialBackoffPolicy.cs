@@ -26,6 +26,10 @@ namespace AnyRetry.RetryPolicies
             _random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref _seed)));
         }
 
+        /// <summary>
+        /// Retry policy options
+        /// </summary>
+        /// <param name="options"></param>
         public ExponentialBackoffPolicy(RetryPolicyOptions options)
         {
             _options = options;
@@ -33,6 +37,11 @@ namespace AnyRetry.RetryPolicies
                 _options = new RetryPolicyOptions { MaxRetryInterval = TimeSpan.FromMilliseconds(_maxDelayMsForExponentialBackoff) };
         }
 
+        /// <summary>
+        /// Apply the retry policy
+        /// </summary>
+        /// <param name="retryParameters"></param>
+        /// <returns></returns>
         public TimeSpan ApplyPolicy(RetryParameters retryParameters)
         {
             return SleepIntervalMs(retryParameters.RetryInterval, retryParameters.RetryIteration, _defaultMaxRelativeRandomSpreadPercent);
