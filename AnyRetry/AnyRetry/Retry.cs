@@ -68,7 +68,9 @@ namespace AnyRetry
         /// <param name="retryLimit">The maximum number of times to retry</param>
         /// <param name="onFailure">Will be called upon an exception thrown</param>
         /// <param name="retryPolicy">The retry policy to apply</param>
+        /// <param name="retryPolicyOptions">The options to provide your retry policy</param>
         /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail</param>
+        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
         /// <exception cref="RetryTimeoutException"></exception>
         /// <returns></returns>
         public static T Do<T>(RetryActionWithParametersAndResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
