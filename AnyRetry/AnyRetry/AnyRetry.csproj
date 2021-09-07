@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;net45;net46;net461;net462;net47;net48</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net45;net46;net461;net462;net47;net48;net5</TargetFrameworks>
 		<Authors>Michael Brown</Authors>
 		<Company>Refactor Software</Company>
 		<Description>A simple library for retrying operations with backoff and async support.</Description>
@@ -26,7 +26,7 @@
 		<DefineConstants>FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER;FEATURE_COMPRESSION</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net47' OR '$(TargetFramework)'=='net48'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net47' OR '$(TargetFramework)'=='net48' OR '$(TargetFramework)'=='net5'">
 		<DefineConstants>FEATURE_CUSTOM_VALUETUPLE;FEATURE_CUSTOM_ATTRIBUTES;FEATURE_CUSTOM_TYPEINFO;FEATURE_GETMETHOD;FEATURE_SETVALUE;FEATURE_TASK;FEATURE_ASSEMBLYBUILDER;FEATURE_COMPRESSION</DefineConstants>
 	</PropertyGroup>
 
