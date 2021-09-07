@@ -7,10 +7,20 @@ using System.Threading.Tasks;
 namespace AnyRetry
 {
     /// <summary>
-    /// A general purpose retry class for retrying code blocks.
+    /// A general purpose retry class for retrying code blocks
     /// </summary>
     public static partial class Retry
     {
+        /// <summary>
+        /// The default number of times to retry
+        /// </summary>
+        private const int DefaultRetryLimit = int.MaxValue;
+
+        /// <summary>
+        /// The default retry interval
+        /// </summary>
+        private static readonly TimeSpan DefaultRetryInterval = TimeSpan.FromSeconds(1);
+
         /// <summary>
         /// An synchronous retry action to perform
         /// </summary>
@@ -20,7 +30,7 @@ namespace AnyRetry
         /// An synchronous retry action to perform
         /// </summary>
         /// <param name="retryIteration">The current retry iteration</param>
-        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
         public delegate void RetryActionWithParameters(int retryIteration, int retryLimit);
 
         /// <summary>
@@ -37,7 +47,7 @@ namespace AnyRetry
         /// </summary>
         /// <param name="action">The Action to call that will be retried until successful.</param>
         /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
         /// <param name="onFailure">Will be called upon an exception thrown</param>
         /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail. Evaluating to false will retry infinitely until true.</param>
         /// <param name="retryPolicy">The retry policy to apply</param>
@@ -55,7 +65,7 @@ namespace AnyRetry
         /// <typeparam name="T"></typeparam>
         /// <param name="action">The Action to call that will be retried until successful.</param>
         /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
         /// <param name="onFailure">Will be called upon an exception thrown</param>
         /// <param name="retryPolicy">The retry policy to apply</param>
         /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail</param>

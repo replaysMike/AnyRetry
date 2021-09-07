@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace AnyRetry
 {
+    /// <summary>
+    /// A general purpose retry class for retrying code blocks
+    /// </summary>
     public static partial class Retry
     {
         /// <summary>
@@ -35,7 +38,7 @@ namespace AnyRetry
         /// </summary>
         /// <param name="action">The Action to call that will be retried until successful.</param>
         /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
         /// <param name="onFailure">Will be called upon an exception thrown</param>
         /// <param name="retryPolicy">The retry policy to apply</param>
         /// <param name="retryPolicyOptions">Options to specify further configuration for a retry policy</param>
@@ -44,7 +47,11 @@ namespace AnyRetry
         /// <exception cref="RetryTimeoutException"></exception>
         public static async Task DoAsync(RetryActionWithParametersAsync action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
-            await PerformActionAsync<object>(async (x, y) => { await action.Invoke(x, y).ConfigureAwait(false); return Task.FromResult<object>(default(object)); }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes).ConfigureAwait(false);
+            await PerformActionAsync<object>(async (x, y) =>
+            {
+                await action.Invoke(x, y);
+                return Task.FromResult(default(object));
+            }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
         }
 
         /// <summary>
@@ -53,7 +60,7 @@ namespace AnyRetry
         /// <typeparam name="T"></typeparam>
         /// <param name="action">The Action to call that will be retried until successful.</param>
         /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry (Default 5)</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
         /// <param name="onFailure">Will be called upon an exception thrown</param>
         /// <param name="retryPolicy">The retry policy to apply</param>
         /// <param name="retryPolicyOptions">Options to specify further configuration for a retry policy</param>
@@ -63,7 +70,7 @@ namespace AnyRetry
         /// <returns></returns>
         public static async Task<T> DoAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
-            return await PerformActionAsync<T>(async (x, y) => await action.Invoke(x, y).ConfigureAwait(false), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes).ConfigureAwait(false);
+            return await PerformActionAsync(async (x, y) => await action.Invoke(x, y), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
         }
 
         private static async Task<T> PerformActionAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
@@ -77,7 +84,7 @@ namespace AnyRetry
             {
                 try
                 {
-                    var result = await action.Invoke(retryIteration, retryLimit).ConfigureAwait(false);
+                    var result = await action.Invoke(retryIteration, retryLimit);
                     return result;
                 }
                 catch (Exception ex)
@@ -89,10 +96,12 @@ namespace AnyRetry
                     {
                         if (retryIteration - 1 < retryLimit)
                         {
-                            var sleepValue = RetryPolicyFactory.Create(retryPolicy, retryPolicyOptions).ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryLimit));
+                            var sleepValue = RetryPolicyFactory
+                                .Create(retryPolicy, retryPolicyOptions)
+                                .ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryLimit));
                             if (sleepValue.TotalMilliseconds < 0)
                                 throw new ArgumentOutOfRangeException();
-                            await Task.Delay(sleepValue).ConfigureAwait(false);
+                            await Task.Delay(sleepValue);
                         }
                     }
                     else
