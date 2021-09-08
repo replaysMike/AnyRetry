@@ -22,19 +22,26 @@ namespace AnyRetry
         public static TimeSpan DefaultRetryInterval = TimeSpan.FromSeconds(1);
 
         /// <summary>
-        /// An synchronous retry action to perform
+        /// A synchronous retry action to perform
         /// </summary>
         public delegate void RetryAction();
 
         /// <summary>
-        /// An synchronous retry action to perform
+        /// A synchronous retry action to perform
         /// </summary>
         /// <param name="retryIteration">The current retry iteration</param>
         /// <param name="retryLimit">The maximum number of times to retry</param>
         public delegate void RetryActionWithParameters(int retryIteration, int retryLimit);
 
         /// <summary>
-        /// An synchronous retry action to perform
+        /// A synchronous retry action to perform
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public delegate T RetryActionWithResult<out T>();
+
+        /// <summary>
+        /// A synchronous retry action to perform
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="retryIteration">The current retry iteration</param>
@@ -43,7 +50,7 @@ namespace AnyRetry
         public delegate T RetryActionWithParametersAndResult<out T>(int retryIteration, int retryLimit);
 
         /// <summary>
-        /// Perform an synchronous retry up to the maximum specified limit
+        /// Perform a synchronous retry up to the maximum specified limit
         /// </summary>
         /// <param name="action">The Action to call that will be retried until successful.</param>
         /// <param name="retryInterval">How often to perform the retry.</param>
@@ -60,7 +67,26 @@ namespace AnyRetry
         }
 
         /// <summary>
-        /// Perform an asynchronous retry up to the maximum specified limit
+        /// Perform a synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action">The Action to call that will be retried until successful.</param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        /// <param name="retryPolicy">The retry policy to apply</param>
+        /// <param name="retryPolicyOptions">The options to provide your retry policy</param>
+        /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail</param>
+        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
+        /// <exception cref="RetryTimeoutException"></exception>
+        /// <returns></returns>
+        public static T Do<T>(RetryActionWithResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
+        {
+            return PerformAction((x, y) => action.Invoke(), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
+        }
+
+        /// <summary>
+        /// Perform a synchronous retry up to the maximum specified limit
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action">The Action to call that will be retried until successful.</param>

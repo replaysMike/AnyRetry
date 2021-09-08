@@ -97,9 +97,17 @@ namespace AnyRetry
         /// Perform an synchronous retry up to the maximum specified limit
         /// </summary>
         /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        public static void Do(RetryActionWithParameters action, TimeSpan retryInterval)
+            => Do(action, retryInterval, DefaultRetryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
         /// <param name="retryLimit">The maximum number of times to retry</param>
         public static void Do(RetryActionWithParameters action, int retryLimit)
-            => Do(action, TimeSpan.FromSeconds(1), retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
+            => Do(action, DefaultRetryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
 
         /// <summary>
         /// Perform an synchronous retry up to the maximum specified limit
@@ -168,7 +176,98 @@ namespace AnyRetry
             => Do(action, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, null, null);
         #endregion
 
-        #region Do with result
+        #region Do with result and without parameters
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public static T Do<T>(RetryActionWithResult<T> action)
+            => Do<T>(action, DefaultRetryInterval, DefaultRetryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <returns></returns>
+        public static T Do<T>(RetryActionWithResult<T> action, TimeSpan retryInterval)
+            => Do<T>(action, retryInterval, DefaultRetryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
+        /// <returns></returns>
+        public static T Do<T>(RetryActionWithResult<T> action, int retryLimit)
+            => Do<T>(action, DefaultRetryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
+        /// <returns></returns>
+        public static T Do<T>(RetryActionWithResult<T> action, TimeSpan retryInterval, int retryLimit)
+            => Do<T>(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
+        /// <param name="onFailure">Will be called upon an exception thrown</param>
+        public static T Do<T>(RetryActionWithResult<T> action, TimeSpan retryInterval, int retryLimit, Action<Exception, int, int> onFailure)
+            => Do<T>(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, onFailure, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
+        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
+        /// <returns></returns>
+        public static T Do<T>(RetryActionWithResult<T> action, TimeSpan retryInterval, int retryLimit, params Type[] exceptionTypes)
+            => Do<T>(action, retryInterval, retryLimit, RetryPolicy.StaticDelay, RetryPolicyOptions.None, null, null, exceptionTypes);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
+        /// <param name="retryPolicy">The retry policy to apply</param>
+        /// <returns></returns>
+        public static T Do<T>(RetryActionWithResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy)
+            => Do<T>(action, retryInterval, retryLimit, retryPolicy, RetryPolicyOptions.None, null, null);
+
+        /// <summary>
+        /// Perform an synchronous retry up to the maximum specified limit
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="retryInterval">How often to perform the retry.</param>
+        /// <param name="retryLimit">The maximum number of times to retry</param>
+        /// <param name="retryPolicy">The retry policy to apply</param>
+        /// <param name="retryPolicyOptions">Options to specify further configuration for a retry policy</param>
+        /// <returns></returns>
+        public static T Do<T>(RetryActionWithResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions)
+            => Do<T>(action, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, null, null);
+
+        #endregion
+
+        #region Do with parameters and result
 
         /// <summary>
         /// Perform an synchronous retry up to the maximum specified limit
