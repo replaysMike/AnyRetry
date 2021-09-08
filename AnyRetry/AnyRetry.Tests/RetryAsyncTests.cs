@@ -113,7 +113,7 @@ namespace AnyRetry.Tests
         }
 
         [Test]
-        public void RetryAsync_CancellationToken_ShouldCancel()
+        public void RetryAsync_CancellationToken_ShouldCancelUsingSynchronousAction()
         {
             var retriesPerformed = 0;
             const int expectedRetries = 2;
@@ -131,6 +131,37 @@ namespace AnyRetry.Tests
                 {
                     if (iteration == expectedRetries - 1)
                     {
+                        cancellationToken.Cancel();
+                    }
+                });
+            });
+
+            // ensure we only retried twice and not the full maxRetries
+            Assert.AreEqual(expectedRetries, retriesPerformed);
+        }
+
+        [Test]
+        public void RetryAsync_CancellationToken_ShouldCancelUsingAsynchronousAction()
+        {
+            var retriesPerformed = 0;
+            const int expectedRetries = 2;
+            const int maxRetries = 5;
+            var cancellationToken = new CancellationTokenSource();
+            // fail on all retries, but cancel on the second failure
+            Assert.ThrowsAsync<RetryTimeoutException>(async () =>
+            {
+                await Retry.DoAsync(async () =>
+                {
+                    await Task.Delay(10);
+                    retriesPerformed++;
+                    throw new RetryTestException();
+                }, TimeSpan.FromMilliseconds(10), maxRetries, cancellationToken.Token, async (ex, iteration, max) =>
+                {
+                    // await something
+                    await Task.Delay(1);
+                    if (iteration == expectedRetries - 1)
+                    {
+                        // cancel
                         cancellationToken.Cancel();
                     }
                 });

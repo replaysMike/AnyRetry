@@ -41,116 +41,97 @@ namespace AnyRetry
         /// <returns></returns>
         public delegate Task<T> RetryActionWithParametersAndResultAsync<T>(int retryInterval, int retryLimit);
 
-        /// <summary>
-        /// Perform an asynchronous retry up to the maximum specified limit
-        /// </summary>
-        /// <param name="action">The Action to call that will be retried until successful.</param>
-        /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry</param>
-        /// <param name="onFailure">Will be called upon an exception thrown</param>
-        /// <param name="retryPolicy">The retry policy to apply</param>
-        /// <param name="retryPolicyOptions">Options to specify further configuration for a retry policy</param>
-        /// <param name="cancellationToken">An asynchronous cancellation token to cancel the pending retry operation</param>
-        /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail</param>
-        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
-        /// <exception cref="RetryTimeoutException"></exception>
-        public static async Task DoAsync(RetryActionWithParametersAsync action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, CancellationToken? cancellationToken, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
+        private static async Task<T> PerformActionAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, CancellationToken? cancellationToken, Func<Exception, int, int, Task> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
-            await PerformActionAsync<object>(async (x, y) =>
+            var exceptions = new List<Exception>();
+            var startTime = DateTime.Now;
+            var retryIteration = 0;
+            do
             {
-                await action.Invoke(x, y);
-                return Task.FromResult(default(object));
-            }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, cancellationToken, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
-        }
+                try
+                {
+                    // invoke the action
+                    return await InvokeAsync(action, retryIteration, retryLimit, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                    await HandleExceptionAsync(ex, startTime, retryInterval, retryIteration, retryLimit, retryPolicy, retryPolicyOptions, onFailure, exceptionTypes);
+                }
+                retryIteration++;
+            } while (MustContinue(mustReturnTrueBeforeFail) || (retryIteration < retryLimit && (!cancellationToken.HasValue || !cancellationToken.Value.IsCancellationRequested)));
 
-        /// <summary>
-        /// Perform an asynchronous retry up to the maximum specified limit
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action">The Action to call that will be retried until successful.</param>
-        /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry</param>
-        /// <param name="onFailure">Will be called upon an exception thrown</param>
-        /// <param name="retryPolicy">The retry policy to apply</param>
-        /// <param name="retryPolicyOptions">Options to specify further configuration for a retry policy</param>
-        /// <param name="cancellationToken">An asynchronous cancellation token to cancel the pending retry operation</param>
-        /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail</param>
-        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
-        /// <exception cref="RetryTimeoutException"></exception>
-        /// <returns></returns>
-        public static async Task<T> DoAsync<T>(RetryActionWithResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, CancellationToken? cancellationToken, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
-        {
-            return await PerformActionAsync(async (x, y) => await action.Invoke(), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, cancellationToken, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
-        }
-
-        /// <summary>
-        /// Perform an asynchronous retry up to the maximum specified limit
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action">The Action to call that will be retried until successful.</param>
-        /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry</param>
-        /// <param name="onFailure">Will be called upon an exception thrown</param>
-        /// <param name="retryPolicy">The retry policy to apply</param>
-        /// <param name="retryPolicyOptions">Options to specify further configuration for a retry policy</param>
-        /// <param name="cancellationToken">An asynchronous cancellation token to cancel the pending retry operation</param>
-        /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail</param>
-        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
-        /// <exception cref="RetryTimeoutException"></exception>
-        /// <returns></returns>
-        public static async Task<T> DoAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, CancellationToken? cancellationToken, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
-        {
-            return await PerformActionAsync(async (x, y) => await action.Invoke(x, y), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, cancellationToken, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
+            throw new RetryTimeoutException(exceptions, retryLimit);
         }
 
         private static async Task<T> PerformActionAsync<T>(RetryActionWithParametersAndResultAsync<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, CancellationToken? cancellationToken, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
             var exceptions = new List<Exception>();
             var startTime = DateTime.Now;
-            var mustContinue = false;
-
             var retryIteration = 0;
             do
             {
                 try
                 {
-                    if (cancellationToken.HasValue)
-                    {
-                        return await Task.Run(() => action.Invoke(retryIteration, retryLimit), cancellationToken.Value);
-                    }
-
-                    var result = await action.Invoke(retryIteration, retryLimit);
-                    return result;
+                    // invoke the action
+                    return await InvokeAsync(action, retryIteration, retryLimit, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    await Task.Yield();
-                    onFailure?.Invoke(ex, retryIteration, retryLimit);
                     exceptions.Add(ex);
-                    if (exceptionTypes == null || exceptionTypes.Length == 0 || exceptionTypes.Contains<Type>(ex.GetType()))
-                    {
-                        if (retryIteration - 1 < retryLimit)
-                        {
-                            var sleepValue = RetryPolicyFactory
-                                .Create(retryPolicy, retryPolicyOptions)
-                                .ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryLimit));
-                            if (sleepValue.TotalMilliseconds < 0)
-                                throw new ArgumentOutOfRangeException();
-                            await Task.Delay(sleepValue);
-                        }
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    await HandleExceptionAsync(ex, startTime, retryInterval, retryIteration, retryLimit, retryPolicy, retryPolicyOptions, onFailure, exceptionTypes);
                 }
                 retryIteration++;
-                // if mustReturnTrueBeforeFail is provided and evaluates to false, retry counts are ignored
-                if (mustReturnTrueBeforeFail != null)
-                    mustContinue = mustReturnTrueBeforeFail.Invoke();
-            } while (mustContinue || (retryIteration < retryLimit && (!cancellationToken.HasValue || !cancellationToken.Value.IsCancellationRequested)));
+            } while (MustContinue(mustReturnTrueBeforeFail) || (retryIteration < retryLimit && (!cancellationToken.HasValue || !cancellationToken.Value.IsCancellationRequested)));
 
             throw new RetryTimeoutException(exceptions, retryLimit);
+        }
+
+        private static async Task<T> InvokeAsync<T>(RetryActionWithParametersAndResultAsync<T> action, int retryIteration, int retryLimit, CancellationToken? cancellationToken)
+        {
+            if (cancellationToken.HasValue)
+            {
+                return await Task.Run(() => action.Invoke(retryIteration, retryLimit), cancellationToken.Value);
+            }
+
+            return await action.Invoke(retryIteration, retryLimit);
+        }
+
+        private static async Task HandleExceptionAsync(Exception ex, DateTime startTime, TimeSpan retryInterval, int retryIteration, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, params Type[] exceptionTypes)
+        {
+            await Task.Yield();
+            onFailure?.Invoke(ex, retryIteration, retryLimit);
+            await WaitOrThrowAsync(ex, startTime, retryInterval, retryIteration, retryLimit, retryPolicy, retryPolicyOptions, exceptionTypes);
+        }
+
+        private static async Task HandleExceptionAsync(Exception ex, DateTime startTime, TimeSpan retryInterval, int retryIteration, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Func<Exception, int, int, Task> onFailure, params Type[] exceptionTypes)
+        {
+            await Task.Yield();
+            if (onFailure != null)
+                await onFailure(ex, retryIteration, retryLimit);
+            await WaitOrThrowAsync(ex, startTime, retryInterval, retryIteration, retryLimit, retryPolicy, retryPolicyOptions, exceptionTypes);
+        }
+
+        private static async Task WaitOrThrowAsync(Exception ex, DateTime startTime, TimeSpan retryInterval, int retryIteration, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, params Type[] exceptionTypes)
+        {
+            if (exceptionTypes == null || exceptionTypes.Length == 0 || exceptionTypes.Contains(ex.GetType()))
+            {
+                if (retryIteration - 1 < retryLimit)
+                {
+                    var sleepValue = RetryPolicyFactory
+                        .Create(retryPolicy, retryPolicyOptions)
+                        .ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryLimit));
+                    if (sleepValue.TotalMilliseconds < 0)
+                        throw new ArgumentOutOfRangeException();
+
+                    // use Task.Delay for asynchronous waits
+                    await Task.Delay(sleepValue);
+                }
+            }
+            else
+            {
+                throw ex;
+            }
         }
     }
 }

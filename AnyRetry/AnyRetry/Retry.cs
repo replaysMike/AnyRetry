@@ -49,101 +49,66 @@ namespace AnyRetry
         /// <returns></returns>
         public delegate T RetryActionWithParametersAndResult<out T>(int retryIteration, int retryLimit);
 
-        /// <summary>
-        /// Perform a synchronous retry up to the maximum specified limit
-        /// </summary>
-        /// <param name="action">The Action to call that will be retried until successful.</param>
-        /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry</param>
-        /// <param name="onFailure">Will be called upon an exception thrown</param>
-        /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail. Evaluating to false will retry infinitely until true.</param>
-        /// <param name="retryPolicy">The retry policy to apply</param>
-        /// <param name="retryPolicyOptions">The options to provide your retry policy</param>
-        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
-        /// <exception cref="RetryTimeoutException"></exception>
-        public static void Do(RetryActionWithParameters action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
-        {
-            PerformAction<object>((x, y) => { action.Invoke(x, y); return null; }, retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
-        }
-
-        /// <summary>
-        /// Perform a synchronous retry up to the maximum specified limit
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action">The Action to call that will be retried until successful.</param>
-        /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry</param>
-        /// <param name="onFailure">Will be called upon an exception thrown</param>
-        /// <param name="retryPolicy">The retry policy to apply</param>
-        /// <param name="retryPolicyOptions">The options to provide your retry policy</param>
-        /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail</param>
-        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
-        /// <exception cref="RetryTimeoutException"></exception>
-        /// <returns></returns>
-        public static T Do<T>(RetryActionWithResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
-        {
-            return PerformAction((x, y) => action.Invoke(), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
-        }
-
-        /// <summary>
-        /// Perform a synchronous retry up to the maximum specified limit
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action">The Action to call that will be retried until successful.</param>
-        /// <param name="retryInterval">How often to perform the retry.</param>
-        /// <param name="retryLimit">The maximum number of times to retry</param>
-        /// <param name="onFailure">Will be called upon an exception thrown</param>
-        /// <param name="retryPolicy">The retry policy to apply</param>
-        /// <param name="retryPolicyOptions">The options to provide your retry policy</param>
-        /// <param name="mustReturnTrueBeforeFail">Must evaluate to true for retry to fail</param>
-        /// <param name="exceptionTypes">A list of exceptions that will be retried gracefully. All other exceptions will be rethrown.</param>
-        /// <exception cref="RetryTimeoutException"></exception>
-        /// <returns></returns>
-        public static T Do<T>(RetryActionWithParametersAndResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
-        {
-            return PerformAction((x, y) => action.Invoke(x, y), retryInterval, retryLimit, retryPolicy, retryPolicyOptions, onFailure, mustReturnTrueBeforeFail, exceptionTypes);
-        }
-
         private static T PerformAction<T>(RetryActionWithParametersAndResult<T> action, TimeSpan retryInterval, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, Func<bool> mustReturnTrueBeforeFail, params Type[] exceptionTypes)
         {
             var exceptions = new List<Exception>();
             var startTime = DateTime.Now;
-            var mustContinue = false;
-
             var retryIteration = 0;
             do
             {
                 try
                 {
+                    // invoke the action
                     return action(retryIteration, retryLimit);
                 }
                 catch (Exception ex)
                 {
-                    Task.Yield();
-                    onFailure?.Invoke(ex, retryIteration, retryLimit);
                     exceptions.Add(ex);
-                    if (exceptionTypes == null || exceptionTypes.Length == 0 || exceptionTypes.Contains<Type>(ex.GetType()))
-                    {
-                        if (retryIteration - 1 < retryLimit)
-                        {
-                            var sleepValue = RetryPolicyFactory.Create(retryPolicy, retryPolicyOptions).ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryLimit));
-                            if (sleepValue.TotalMilliseconds < 0)
-                                throw new ArgumentOutOfRangeException();
-                            Thread.Sleep(sleepValue);
-                        }
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    HandleException(ex, startTime, retryInterval, retryIteration, retryLimit, retryPolicy, retryPolicyOptions, onFailure, exceptionTypes);
                 }
                 retryIteration++;
-                // if mustReturnTrueBeforeFail is provided and evaluates to false, retry counts are ignored
-                if (mustReturnTrueBeforeFail != null)
-                    mustContinue = mustReturnTrueBeforeFail.Invoke();
-            } while (mustContinue || retryIteration < retryLimit);
+            } while (MustContinue(mustReturnTrueBeforeFail) || retryIteration < retryLimit);
 
             throw new RetryTimeoutException(exceptions, retryLimit);
+        }
+
+        private static void HandleException(Exception ex, DateTime startTime, TimeSpan retryInterval, int retryIteration, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, Action<Exception, int, int> onFailure, params Type[] exceptionTypes)
+        {
+            Task.Yield();
+            onFailure?.Invoke(ex, retryIteration, retryLimit);
+            WaitOrThrow(ex, startTime, retryInterval, retryIteration, retryLimit, retryPolicy, retryPolicyOptions, exceptionTypes);
+        }
+
+        private static void WaitOrThrow(Exception ex, DateTime startTime, TimeSpan retryInterval, int retryIteration, int retryLimit, RetryPolicy retryPolicy, RetryPolicyOptions retryPolicyOptions, params Type[] exceptionTypes)
+        {
+            if (exceptionTypes == null || exceptionTypes.Length == 0 || exceptionTypes.Contains(ex.GetType()))
+            {
+                if (retryIteration - 1 < retryLimit)
+                {
+                    var sleepValue = RetryPolicyFactory
+                        .Create(retryPolicy, retryPolicyOptions)
+                        .ApplyPolicy(RetryParameters.Create(startTime, retryInterval, retryIteration, retryLimit));
+                    if (sleepValue.TotalMilliseconds < 0)
+                        throw new ArgumentOutOfRangeException(nameof(sleepValue));
+
+                    // use Thread.Sleep for synchronous waits
+                    Thread.Sleep(sleepValue);
+                }
+            }
+            else
+            {
+                throw ex;
+            }
+        }
+
+        private static bool MustContinue(Func<bool> checkMustContinue)
+        {
+            // if mustReturnTrueBeforeFail is provided and evaluates to false, retry counts are ignored
+            if (checkMustContinue != null)
+                return checkMustContinue.Invoke();
+
+            // no must continue callback provided
+            return false;
         }
     }
 }
